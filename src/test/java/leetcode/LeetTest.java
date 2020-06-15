@@ -45,4 +45,13 @@ class LeetTest {
         assertEquals(Leet.atoi("-91283472332"), -2147483648);
         assertEquals(Leet.atoi("2147483646"), 2147483646);
     }
+
+    @Test
+    void testSearchRange() {
+        Search search = new Search();
+        int[] nums = {1, 2, 3, 3, 3, 4, 6};
+        int[] results = search.searchRange(nums, 3);
+        assertEquals(2, results[0]);
+        assertEquals(4, results[1]);
+    }
 }
