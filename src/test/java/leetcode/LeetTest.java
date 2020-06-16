@@ -54,4 +54,30 @@ class LeetTest {
         assertEquals(2, results[0]);
         assertEquals(4, results[1]);
     }
+
+    @Test
+    void minWindow() {
+        DoublePointer doublePointer = new DoublePointer();
+        String s = "ADOBECODEBANC";
+        String t = "ABC";
+        String result = doublePointer.minWindow(s, t);
+//        System.out.println(result);
+        assertEquals("BANC", result);
+        s = "a";
+        t = "a";
+        result = doublePointer.minWindow(s, t);
+//        System.out.println(result);
+        assertEquals("a", result);
+    }
+
+    @Test
+    void testCheckInclusion() {
+        DoublePointer doublePointer = new DoublePointer();
+        String s = "ADOBECODEBANC";
+        String t = "DOC";
+        assertTrue(doublePointer.checkInclusion(s, t));
+        s = "abcdeabcdx";
+        t = "abcdxabcde";
+        assertTrue(doublePointer.checkInclusion(s, t));
+    }
 }

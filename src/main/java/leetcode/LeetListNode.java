@@ -107,6 +107,7 @@ public class LeetListNode {
             fast = fast.next.next;
         }
         ListNode cur = slow.next;
+        // 断开链表
         slow.next = null;
         return cur;
     }
