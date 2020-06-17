@@ -1,6 +1,9 @@
 package leetcode;
 
+import leetcode.dp.DPMinCostTickets;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,6 +18,10 @@ class LeetTest {
         String s = "pwwkew";
         assertEquals(Leet.lengthOfLongestSubstring(s), 3);
         assertEquals(Leet.lengthOfLongestSubstring("abcdefghi"), 9);
+
+        DoublePointer doublePointer = new DoublePointer();
+        int result = doublePointer.lengthOfLongestSubstring(s);
+        assertEquals(3, result);
     }
 
     @Test
@@ -79,5 +86,16 @@ class LeetTest {
         s = "abcdeabcdx";
         t = "abcdxabcde";
         assertTrue(doublePointer.checkInclusion(s, t));
+    }
+
+    @Test
+    void testFindAnagrams() {
+        DoublePointer doublePointer = new DoublePointer();
+        String s = "cbaebabacd";
+        String t = "abc";
+        List<Integer> result = doublePointer.findAnagrams(s, t);
+        System.out.println(result);
+        assertEquals(0, result.get(0));
+        assertEquals(6, result.get(1));
     }
 }
