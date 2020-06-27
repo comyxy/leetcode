@@ -20,4 +20,13 @@ class DPTest {
         assertEquals(3, eggDrop.superEggDrop3(2, 6));
         assertEquals(4, eggDrop.superEggDrop3(3, 14));
     }
+
+    @Test
+    void testBag() {
+        Bag bag = new Bag();
+        int[] wt = {2, 1, 3};
+        int[] val = {4, 2, 3};
+        int result = bag.knapsack(4, 3, wt, val);
+        assertEquals(6, result);
+    }
 }
