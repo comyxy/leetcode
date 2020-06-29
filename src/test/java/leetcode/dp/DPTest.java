@@ -20,6 +20,13 @@ class DPTest {
 
         assertEquals(3, eggDrop.superEggDrop3(2, 6));
         assertEquals(4, eggDrop.superEggDrop3(3, 14));
+
+        assertEquals(3, eggDrop.superEggDrop4(2, 6));
+        assertEquals(4, eggDrop.superEggDrop4(3, 14));
+
+        assertEquals(3, eggDrop.superEggDrop5(2, 6));
+        assertEquals(4, eggDrop.superEggDrop5(3, 14));
+
     }
 
     @Test
@@ -46,5 +53,13 @@ class DPTest {
         assertEquals(3, result);
         int result2 = base.minDistanceWithTrace("horse", "ros");
         assertEquals(3, result2);
+    }
+
+    @Test
+    void testBurstBalloon() {
+        BurstBalloon burstBalloon = new BurstBalloon();
+        int[] nums = {3, 1, 5, 8};
+        assertEquals(167, burstBalloon.maxCoins(nums));
+        assertEquals(167, burstBalloon.maxCoins2(nums));
     }
 }

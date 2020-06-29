@@ -18,6 +18,11 @@ import java.util.Map;
 public class EggDrop {
     private Map<Pair<Integer, Integer>, Integer> memo = new HashMap<>();
 
+    /**
+     * @param K 鸡蛋数量
+     * @param N 楼层数
+     * @return
+     */
     public int superEggDrop(int K, int N) {
         return helper(K, N);
     }
@@ -109,6 +114,13 @@ public class EggDrop {
 
     /*----决策单调性----*/
 
+    /**
+     * 自底向上
+     * 记住dp(K,N-i) dp(K-1,i-1) 以及 max(dp(K,N-i), dp(K-1,i-1))的关于i函数图像
+     * @param K
+     * @param N
+     * @return
+     */
     public int superEggDrop3(int K, int N) {
         // dp[i] 代表 dp[1,i]
         int[] dp = new int[N + 1];
@@ -132,5 +144,61 @@ public class EggDrop {
             dp = dp2;
         }
         return dp[N];
+    }
+
+    /**
+     * 无空间优化 自底向上
+     * @param K
+     * @param N
+     * @return
+     */
+    public int superEggDrop4(int K, int N) {
+        //dp[i][j]代表有i个鸡蛋时估计j层楼时需要的次数
+        int[][] dp = new int[K + 1][N + 1];
+        //dp[0][..]不存在 dp[1][j] = j dp[i][0]=0
+        for (int j = 0; j <= N; j++) {
+            dp[1][j] = j;
+        }
+
+        for (int k = 2; k <= K; k++) {
+            // x代表固定鸡蛋数k下dp最小对应的楼层数n
+            // 楼层n增加时 最少扔鸡蛋数dp肯定也是增加的
+            // 对于n2>n1 肯定有 x(n2)>x(n1)
+            int x = 1;
+            for (int n = 1; n <= N; n++) {
+                while (x < n && Math.max(dp[k][n - x], dp[k - 1][x - 1]) > Math.max(dp[k][n - x - 1], dp[k - 1][x])) {
+                    x++;
+                }
+                dp[k][n] = Math.max(dp[k][n - x], dp[k - 1][x - 1]) + 1;
+            }
+        }
+        return dp[K][N];
+    }
+
+    /**
+     * 没有任何优化
+     * @param K
+     * @param N
+     * @return
+     */
+    public int superEggDrop5(int K, int N) {
+        //dp[i][j]代表有i个鸡蛋时估计j层楼时需要的次数
+        int[][] dp = new int[K + 1][N + 1];
+        //dp[0][..]不存在 dp[1][j] = j dp[i][0]=0
+        for (int j = 0; j <= N; j++) {
+            dp[1][j] = j;
+        }
+
+        for (int k = 2; k <= K; k++) {
+            for (int n = 1; n <= N; n++) {
+                int tmp = Integer.MAX_VALUE;
+                for (int x = 1; x <= n; x++) {
+                    tmp = Math.min(tmp,
+                            Math.max(dp[k][n-x], dp[k-1][x - 1]));
+                }
+                dp[k][n] = tmp + 1;
+            }
+        }
+        return dp[K][N];
     }
 }
