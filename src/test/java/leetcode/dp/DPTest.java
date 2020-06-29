@@ -1,5 +1,6 @@
 package leetcode.dp;
 
+import leetcode.math.Geometry;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,5 +29,22 @@ class DPTest {
         int[] val = {4, 2, 3};
         int result = bag.knapsack(4, 3, wt, val);
         assertEquals(6, result);
+    }
+
+    @Test
+    void testCanPartition() {
+        Base base = new Base();
+        int[] nums = {1,5,11,5};
+        boolean can = base.canPartition(nums);
+        assertTrue(can);
+    }
+
+    @Test
+    void testMinDistance() {
+        Base base = new Base();
+        int result = base.minDistance("horse", "ros");
+        assertEquals(3, result);
+        int result2 = base.minDistanceWithTrace("horse", "ros");
+        assertEquals(3, result2);
     }
 }
