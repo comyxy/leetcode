@@ -30,6 +30,14 @@ class DPTest {
     }
 
     @Test
+    void testBurstBalloon() {
+        BurstBalloon burstBalloon = new BurstBalloon();
+        int[] nums = {3, 1, 5, 8};
+        assertEquals(167, burstBalloon.maxCoins(nums));
+        assertEquals(167, burstBalloon.maxCoins2(nums));
+    }
+
+    @Test
     void testBag() {
         Bag bag = new Bag();
         int[] wt = {2, 1, 3};
@@ -38,10 +46,12 @@ class DPTest {
         assertEquals(6, result);
     }
 
+    /*-----------------------------------------------*/
+
     @Test
     void testCanPartition() {
         Base base = new Base();
-        int[] nums = {1,5,11,5};
+        int[] nums = {1, 5, 11, 5};
         boolean can = base.canPartition(nums);
         assertTrue(can);
     }
@@ -56,10 +66,18 @@ class DPTest {
     }
 
     @Test
-    void testBurstBalloon() {
-        BurstBalloon burstBalloon = new BurstBalloon();
-        int[] nums = {3, 1, 5, 8};
-        assertEquals(167, burstBalloon.maxCoins(nums));
-        assertEquals(167, burstBalloon.maxCoins2(nums));
+    void testLongestCommonSubsequence() {
+        Base base = new Base();
+        int result = base.longestCommonSubsequence("babcde", "acze");
+        assertEquals(3, result);
+        int result2 = base.longestCommonSubsequence2("aaaa", "aaab");
+        assertEquals(3, result2);
+    }
+
+    @Test
+    void testLongestPalindromeSubseq() {
+        Base base = new Base();
+        int result = base.longestPalindromeSubseq("bbbab");
+        assertEquals(4, result);
     }
 }

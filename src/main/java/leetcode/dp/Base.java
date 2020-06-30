@@ -284,7 +284,7 @@ public class Base {
         }
         //print out
         Node t = dp[l1][l2];
-        while(t != null){
+        while (t != null) {
             System.out.println(t);
             t = t.prev;
         }
@@ -307,5 +307,95 @@ public class Base {
 
     private enum Choice {
         SKIP, INSERT, DELETE, REPLACE;
+    }
+
+    /**
+     * 给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度
+     *
+     * @param text1
+     * @param text2
+     * @return
+     */
+    public int longestCommonSubsequence(String text1, String text2) {
+        char[] cs1 = text1.toCharArray();
+        char[] cs2 = text2.toCharArray();
+        return longestCommonSubsequenceHelper(cs1, cs1.length - 1, cs2, cs2.length - 1);
+    }
+
+    private int longestCommonSubsequenceHelper(char[] cs1, int i, char[] cs2, int j) {
+        // dp[i][j] 字符串cs1前i个字符 与 字符串cs2前j个字符 的最大公共子序列
+        // 两个字符串从后往前遍历
+        // base
+        if (i == -1) {
+            return 0;
+        }
+        if (j == -1) {
+            return 0;
+        }
+
+        if (cs1[i] == cs2[j]) {
+            return longestCommonSubsequenceHelper(cs1, i - 1, cs2, j - 1) + 1;
+        } else {
+            return Math.max(
+                    longestCommonSubsequenceHelper(cs1, i - 1, cs2, j),
+                    longestCommonSubsequenceHelper(cs1, i, cs2, j - 1)
+            );
+        }
+    }
+
+    public int longestCommonSubsequence2(String text1, String text2) {
+        char[] cs1 = text1.toCharArray();
+        char[] cs2 = text2.toCharArray();
+        final int l1 = cs1.length, l2 = cs2.length;
+        // dp[i][j] 字符串cs1前i个字符 与 字符串cs2前j个字符 的最大公共子序列
+        int[][] dp = new int[l1 + 1][l2 + 1];
+        // base
+        for (int i = 0; i <= l1; i++) {
+            dp[i][0] = 0;
+        }
+        for (int j = 0; j <= l2; j++) {
+            dp[0][j] = 0;
+        }
+
+        for (int i = 1; i <= l1; i++) {
+            for (int j = 1; j <= l2; j++) {
+                if (cs1[i - 1] == cs2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[l1][l2];
+    }
+
+    /**
+     * 给定一个字符串 s ，找到其中最长的回文子序列，并返回该序列的长度
+     *
+     * @param s
+     * @return
+     */
+    public int longestPalindromeSubseq(String s) {
+        char[] cs = s.toCharArray();
+        final int n = cs.length;
+        // dp[i][j] 代表 [i,j] 第i个字符到第j个字符字符串所代表的最长回文串序列
+        int[][] dp = new int[n][n];
+        // base
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = 1;
+        }
+        // 注意遍历顺序 从状态转移方程中得到
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                // 状态转移
+                if (cs[i] == cs[j]) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i + 1][j]);
+                }
+            }
+        }
+        return dp[0][n - 1];
     }
 }
