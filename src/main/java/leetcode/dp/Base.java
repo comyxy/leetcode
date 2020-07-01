@@ -1,5 +1,7 @@
 package leetcode.dp;
 
+import javafx.util.Pair;
+
 import java.util.Arrays;
 
 /**
@@ -397,5 +399,126 @@ public class Base {
             }
         }
         return dp[0][n - 1];
+    }
+
+    /**
+     * LeetCode 877 石子游戏
+     *
+     * @param piles
+     * @return
+     */
+    public boolean stoneGame(int[] piles) {
+        final int n = piles.length;
+        //dp[i][j] 代表索引第i个石子到第j个石子 [i,j]
+        StoneGameResult[][] dp = new StoneGameResult[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                dp[i][j] = new StoneGameResult();
+            }
+        }
+        //base
+        for (int i = 0; i < n; i++) {
+            dp[i][i].first = piles[i];
+            dp[i][i].second = 0;
+        }
+        // i从大到小 j从小到大 遍历
+/*        for (int i = n - 2; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                int leftValue = dp[i + 1][j].second + piles[i];
+                int rightValue = dp[i][j - 1].second + piles[j];
+                if (leftValue > rightValue) {
+                    dp[i][j].first = leftValue;
+                    dp[i][j].second = dp[i + 1][j].first;
+                } else {
+                    dp[i][j].first = rightValue;
+                    dp[i][j].second = dp[i][j - 1].first;
+                }
+            }
+        }*/
+        // 斜着遍历
+        for (int k = 1; k < n; k++) {
+            for (int i = 0; i < n - k; i++) {
+                int j = i + k;
+                int leftValue = dp[i + 1][j].second + piles[i];
+                int rightValue = dp[i][j - 1].second + piles[j];
+                if (leftValue > rightValue) {
+                    dp[i][j].first = leftValue;
+                    dp[i][j].second = dp[i + 1][j].first;
+                } else {
+                    dp[i][j].first = rightValue;
+                    dp[i][j].second = dp[i][j - 1].first;
+                }
+            }
+        }
+        return dp[0][n - 1].first > dp[0][n - 1].second;
+    }
+
+    private static class StoneGameResult {
+        int first;
+        int second;
+    }
+
+    /**
+     * LeetCode10 正则表达式匹配
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        char[] text = s.toCharArray();
+        char[] pattern = p.toCharArray();
+        isMatchDP = new Boolean[text.length + 1][pattern.length + 1];
+        return isMatchHelper(text, 0, pattern, 0);
+    }
+
+    private Boolean[][] isMatchDP;
+
+    private boolean isMatchHelper(char[] text, int i, char[] pattern, int j) {
+        if (isMatchDP[i][j] != null) {
+            return isMatchDP[i][j];
+        }
+        boolean res;
+        if (j == pattern.length) {
+            res = i == text.length;
+        } else {
+            boolean firstMatch = i != text.length &&
+                    (text[i] == pattern[j] || pattern[j] == '.');
+            //处理*
+            if (pattern.length - j >= 2 && pattern[j + 1] == '*') {
+                res = isMatchHelper(text, i, pattern, j + 2) ||
+                        (firstMatch && isMatchHelper(text, i + 1, pattern, j));
+            } else {
+                res = firstMatch && isMatchHelper(text, i + 1, pattern, j + 1);
+            }
+        }
+        isMatchDP[i][j] = res;
+        return res;
+    }
+
+    public boolean isMatch2(String s, String p) {
+        char[] text = s.toCharArray();
+        char[] pattern = p.toCharArray();
+        final int l1 = text.length, l2 = pattern.length;
+        // dp[i][j] text的第i个字符到结尾[i,...] 与 pattern的第j个字符到结尾[j,...] 能否匹配
+        Boolean[][] dp = new Boolean[l1 + 1][l2 + 1];
+        // base
+        dp[l1][l2] = true;
+        for (int i = 0; i < l1; i++) {
+            dp[i][l2] = false;
+        }
+        //
+        for (int i = l1; i >= 0; i--) {
+            for (int j = l2 - 1; j >= 0; j--) {
+                boolean firstMatch = i != l1 &&
+                        (text[i] == pattern[j] || pattern[j] == '.');
+                if (l2 - j >= 2 && pattern[j + 1] == '*') {
+                    dp[i][j] = dp[i][j + 2] || (firstMatch && dp[i + 1][j]);
+                } else {
+                    dp[i][j] = firstMatch && dp[i + 1][j + 1];
+                }
+            }
+        }
+        return dp[0][0];
     }
 }

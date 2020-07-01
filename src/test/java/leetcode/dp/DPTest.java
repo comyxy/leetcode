@@ -80,4 +80,24 @@ class DPTest {
         int result = base.longestPalindromeSubseq("bbbab");
         assertEquals(4, result);
     }
+
+    @Test
+    void testStoneGame() {
+        Base base = new Base();
+        int[] piles = {5, 3, 5, 4};
+        assertTrue(base.stoneGame(piles));
+        int[] piles2 = {1, 100, 1, 3, 5};
+        assertFalse(base.stoneGame(piles2));
+    }
+
+    @Test
+    void testIsMatch() {
+        Base base = new Base();
+        boolean result = base.isMatch("aaab", "a.*b");
+        assertTrue(result);
+        boolean result2 = base.isMatch("mississippi", "mis*is*p*.");
+        assertFalse(result2);
+        boolean result3 = base.isMatch2("mississippi", "mis*is*p*.");
+        assertFalse(result3);
+    }
 }
