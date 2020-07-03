@@ -236,7 +236,7 @@ public class Base {
         return dp[l1][l2];
     }
 
-    private int min(int a, int b, int c) {
+    private static int min(int a, int b, int c) {
         return Math.min(a, Math.min(b, c));
     }
 
@@ -520,5 +520,42 @@ public class Base {
             }
         }
         return dp[0][0];
+    }
+
+
+    /**
+     * LeetCode651 四键键盘
+     *
+     * @param n 操作次数
+     * @return
+     */
+    public int maxOf4KeyBoard(int n) {
+        return maxOf4KeyBoardHelper(n, 0, 0);
+    }
+
+    private int maxOf4KeyBoardHelper(int opTime, int displayLength, int cacheLength) {
+        if (opTime <= 0) {
+            return displayLength;
+        }
+
+        return max(maxOf4KeyBoardHelper(opTime - 1, displayLength + 1, cacheLength),
+                maxOf4KeyBoardHelper(opTime - 1, displayLength + cacheLength, cacheLength),
+                maxOf4KeyBoardHelper(opTime - 2, displayLength, displayLength));
+    }
+
+    private static int max(int a, int b, int c) {
+        return Math.max(a, Math.max(b, c));
+    }
+
+    public int maxOf4KeyBoard2(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            dp[i] = dp[i - 1] + 1;
+            for (int j = 2; j < i; j++) {
+                dp[i] = Math.max(dp[i], dp[j - 2] * (i - j + 1));
+            }
+        }
+        return dp[n];
     }
 }

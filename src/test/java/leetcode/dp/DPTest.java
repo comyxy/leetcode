@@ -100,4 +100,13 @@ class DPTest {
         boolean result3 = base.isMatch2("mississippi", "mis*is*p*.");
         assertFalse(result3);
     }
+
+    @Test
+    void testMaxOf4KeyBoard() {
+        Base base = new Base();
+        assertEquals(3,base.maxOf4KeyBoard(3));
+        assertEquals(9,base.maxOf4KeyBoard(7));
+
+        assertEquals(9,base.maxOf4KeyBoard2(7));
+    }
 }
