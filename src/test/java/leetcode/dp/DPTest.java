@@ -46,6 +46,30 @@ class DPTest {
         assertEquals(6, result);
     }
 
+    /*------------------Greedy-------------------------*/
+
+    @Test
+    void testEraseOverlapIntervals() {
+        Greedy greedy = new Greedy();
+        int[][] intervals = new int[4][2];
+        intervals[0] = new int[]{1, 2};
+        intervals[1] = new int[]{2, 3};
+        intervals[2] = new int[]{3, 4};
+        intervals[3] = new int[]{1, 3};
+        int result = greedy.eraseOverlapIntervals(intervals);
+        assertEquals(1, result);
+        int result2 = greedy.eraseOverlapIntervals2(intervals);
+        assertEquals(1, result2);
+    }
+
+    @Test
+    void testFindMinArrowShots() {
+        Greedy greedy = new Greedy();
+        int[][] points = {{10,16}, {2,8}, {1,6}, {7,12}};
+        int result = greedy.findMinArrowShots(points);
+        assertEquals(2, result);
+    }
+
     /*-----------------------------------------------*/
 
     @Test
