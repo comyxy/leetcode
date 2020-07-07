@@ -1,5 +1,6 @@
-package leetcode.math;
+package leetcode;
 
+import leetcode.math.Geometry;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

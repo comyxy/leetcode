@@ -3,6 +3,7 @@ package leetcode;
 import leetcode.node.ListNode;
 
 /**
+ * 链表
  * @author comyxy
  * @date 2020/6/7
  */
