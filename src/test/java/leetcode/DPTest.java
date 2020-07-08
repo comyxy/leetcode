@@ -70,6 +70,39 @@ class DPTest {
         assertEquals(2, result);
     }
 
+    /*----------Robot--------------------------------*/
+
+    @Test
+    void testRobot() {
+        Robot robot = new Robot();
+        int[][] grid = new int[3][3];
+        grid[0] = new int[]{0,0,0};
+        grid[1] = new int[]{0,1,0};
+        grid[2] = new int[]{0,0,0};
+        assertEquals(2, robot.uniquePathsWithObstacles(grid));
+        int[][] grid2 = new int[3][3];
+        grid2[0] = new int[]{1,3,1};
+        grid2[1] = new int[]{1,5,1};
+        grid2[2] = new int[]{4,2,1};
+        assertEquals(7, robot.minPathSum(grid2));
+    }
+
+    /*------------------dfa----------------------*/
+
+    @Test
+    void testIsNumber() {
+        DFA dfa = new DFA();
+        boolean isNumber = dfa.isNumber(" .2");
+        assertTrue(isNumber);
+    }
+
+    @Test
+    void testMyAtoi() {
+        DFA dfa = new DFA();
+        int result = dfa.myAtoi("words and 987");
+        System.out.println(result);
+    }
+
     /*-----------------------------------------------*/
 
     @Test
