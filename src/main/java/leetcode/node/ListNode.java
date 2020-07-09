@@ -1,7 +1,7 @@
 package leetcode.node;
 
 /**
- * @author comyxy
+ * 链表节点
  * @date 2020/6/7
  */
 public class ListNode {

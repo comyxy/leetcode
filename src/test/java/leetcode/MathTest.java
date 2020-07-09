@@ -1,5 +1,6 @@
 package leetcode;
 
+import leetcode.math.Bit;
 import leetcode.math.Geometry;
 import org.junit.jupiter.api.Test;
 
@@ -23,5 +24,19 @@ class MathTest {
         Geometry geometry = new Geometry();
         int result = geometry.josephus(5, 3);
         assertEquals(3, result);
+    }
+
+
+    @Test
+    void testBits() {
+        Bit bit = new Bit();
+
+        int reversed = bit.reverseBits(0b11111111111111111111111111111101);
+        assertEquals("10111111111111111111111111111111", Integer.toBinaryString(reversed));
+
+        int hammingWeight = bit.hammingWeight(0b11111111111111111111111111111101);
+        assertEquals(31, hammingWeight);
+        hammingWeight = bit.hammingWeight(0b11111111111111111111111111111101);
+        assertEquals(31, hammingWeight);
     }
 }
