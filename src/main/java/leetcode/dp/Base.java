@@ -593,13 +593,13 @@ public class Base {
                 .get(0);
         for (int i = 1; i < n; i++) {
             dp[i] = dp[i-1] + triangle.get(i)
-                    .get(0);
+                    .get(i);
             for (int j = i - 1; j > 0; j--) {
                 dp[j] = Math.min(dp[j-1], dp[j]) + triangle.get(i).get(j);
             }
             dp[0] = dp[0] + triangle.get(i)
-                    .get(i);
+                    .get(0);
         }
-        return Arrays.stream(dp).max().getAsInt();
+        return Arrays.stream(dp).min().getAsInt();
     }
 }
