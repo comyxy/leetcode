@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author comyxy
@@ -97,5 +98,17 @@ class LeetTest {
         System.out.println(result);
         assertEquals(0, result.get(0));
         assertEquals(6, result.get(1));
+    }
+
+
+    @Test
+    void testIntersect() {
+        Leet leet = new Leet();
+        int[] nums1 = {1,2,3,4,5,7,7};
+        int[] nums2 = {4,6,7,6,7};
+        int[] result = leet.intersect(nums1, nums2);
+        for (int r : result) {
+            System.out.println(r);
+        }
     }
 }

@@ -1,5 +1,10 @@
 package leetcode;
 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -465,4 +470,111 @@ public class Leet {
         }
         return result;
     }
+
+    /**
+     * LeetCode350
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] intersect(int[] nums1, int[] nums2) {
+        if (nums1.length > nums2.length) {
+            return intersect(nums2, nums1);
+        }
+
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums1) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        List<Integer> list = new ArrayList<>();
+        for (int num : nums2) {
+            Integer count = map.get(num);
+            if (count != null && count > 0) {
+                list.add(num);
+                map.put(num, count - 1);
+            }
+        }
+        int[] res = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            res[i] = list.get(i);
+        }
+        return res;
+    }
+
+    public int[] intersect2(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        List<Integer> list = new ArrayList<>();
+        int i = 0, j = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if (nums1[i] > nums2[j]) {
+                j++;
+            } else if (nums1[i] < nums2[j]) {
+                i++;
+            } else {
+                list.add(nums1[i]);
+                i++;
+                j++;
+            }
+        }
+        int[] res = new int[list.size()];
+        for (int k = 0; k < list.size(); k++) {
+            res[k] = list.get(k);
+        }
+        return res;
+    }
+
+    public int[] intersect3(int[] nums1, String pathOfNums2) {
+
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums1) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        List<Integer> list = new ArrayList<>();
+
+        InputStream in = Leet.class.getClassLoader()
+                .getResourceAsStream(pathOfNums2);
+        if (in == null) {
+            throw new IllegalArgumentException();
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        int c;
+        try {
+            StringBuilder sb = new StringBuilder();
+            while ((c = reader.read()) != -1) {
+                if(c == 32){
+                    int num = Integer.parseInt(sb.toString());
+                    Integer count = map.get(num);
+                    if (count != null && count > 0) {
+                        list.add(num);
+                        map.put(num, count - 1);
+                    }
+                    sb = new StringBuilder();
+                }else {
+                    sb.append((char) c);
+                }
+            }
+            reader.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int[] res = new int[list.size()];
+        for (int k = 0; k < list.size(); k++) {
+            res[k] = list.get(k);
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Leet leet = new Leet();
+        int[] nums1 = {1, 2, 4, 63, 2};
+        int[] intersects = leet.intersect3(nums1, "intersect");
+        for (int intersect : intersects) {
+            System.out.println(intersect);
+        }
+    }
+
+
 }

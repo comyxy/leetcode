@@ -2,7 +2,9 @@ package leetcode.dp;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @date 2020/6/27
@@ -458,6 +460,23 @@ public class Base {
         int second;
     }
 
+
+    /**
+     * LeetCode292
+     *
+     * @param n
+     * @return
+     */
+    public boolean canWinNim(int n) {
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = false;
+        dp[1] = dp[2] = dp[3] = true;
+        for (int i = 4; i <= n; i++) {
+            dp[i] = !(dp[i - 1] && dp[i - 2] && dp[i - 3]);
+        }
+        return dp[n];
+    }
+
     /**
      * LeetCode10 正则表达式匹配
      *
@@ -557,5 +576,30 @@ public class Base {
             }
         }
         return dp[n];
+    }
+
+    /**
+     * 给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+     * LeetCode120
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        final int n = triangle.size();
+        int[] dp = new int[n];
+        // base
+        dp[0] = triangle.get(0)
+                .get(0);
+        for (int i = 1; i < n; i++) {
+            dp[i] = dp[i-1] + triangle.get(i)
+                    .get(0);
+            for (int j = i - 1; j > 0; j--) {
+                dp[j] = Math.min(dp[j-1], dp[j]) + triangle.get(i).get(j);
+            }
+            dp[0] = dp[0] + triangle.get(i)
+                    .get(i);
+        }
+        return Arrays.stream(dp).max().getAsInt();
     }
 }

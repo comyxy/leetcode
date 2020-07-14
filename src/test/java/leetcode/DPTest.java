@@ -3,6 +3,9 @@ package leetcode;
 import leetcode.dp.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -165,5 +168,12 @@ class DPTest {
         assertEquals(9,base.maxOf4KeyBoard(7));
 
         assertEquals(9,base.maxOf4KeyBoard2(7));
+    }
+
+    @Test
+    void testNim() {
+        Base base = new Base();
+        boolean nim = base.canWinNim(6);
+        System.out.println(nim);
     }
 }
