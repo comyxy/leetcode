@@ -567,13 +567,60 @@ public class Leet {
         return res;
     }
 
+    /**
+     * LeetCode785
+     * @param graph
+     * @return
+     */
+    private static final int UNCOLORED = 0;
+    private static final int RED = 1;
+    private static final int BLACK = 2;
+    private boolean canBipartite;
+
+    public boolean isBipartite(int[][] graph) {
+        final int m = graph.length;
+        if(m == 0) {
+            throw new RuntimeException();
+        }
+        int[] colors = new int[m];
+        // initial as zeros
+        for (int i = 0; i < m; i++) {
+            if(colors[i] == UNCOLORED){
+                isBipartiteHelper(i, RED, colors, graph);
+            }
+            if(!canBipartite){
+                return false;
+            }
+        }
+        return canBipartite;
+    }
+
+    private void isBipartiteHelper(int node, int color, int[] colors, int[][] graph){
+        colors[node] = color;
+        int neighborColor = color == RED ? BLACK : RED;
+        for(int neighbor : graph[node]){
+            if(colors[neighbor] == UNCOLORED){
+                isBipartiteHelper(neighbor, neighborColor, colors, graph);
+                if(!canBipartite){
+                    return;
+                }
+            }else if(colors[neighbor] != neighborColor){
+                canBipartite = false;
+                return;
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Leet leet = new Leet();
-        int[] nums1 = {1, 2, 4, 63, 2};
-        int[] intersects = leet.intersect3(nums1, "intersect");
-        for (int intersect : intersects) {
-            System.out.println(intersect);
-        }
+        int[][] graph = {
+                {1,3},
+                {0,2},
+                {1,3},
+                {0,2}
+        };
+        boolean bipartite = leet.isBipartite(graph);
+        System.out.println(bipartite);
     }
 
 
