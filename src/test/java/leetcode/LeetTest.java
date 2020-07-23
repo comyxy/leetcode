@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LeetTest {
 
     @Test
-    public void testLengthOfLongestSubstring(){
+    public void testLengthOfLongestSubstring() {
         String s = "pwwkew";
         assertEquals(Leet.lengthOfLongestSubstring(s), 3);
         assertEquals(Leet.lengthOfLongestSubstring("abcdefghi"), 9);
@@ -26,25 +26,25 @@ class LeetTest {
     }
 
     @Test
-    public void testMaxArea(){
-        int[] height = {1,8,6,2,5,4,8,3,7};
+    public void testMaxArea() {
+        int[] height = {1, 8, 6, 2, 5, 4, 8, 3, 7};
         assertEquals(Leet.maxArea(height), 49);
     }
 
     @Test
-    public void testGenerateParenthesis(){
+    public void testGenerateParenthesis() {
         System.out.println(Leet.generateParenthesis(3));
     }
 
     @Test
-    public void testMincostTickets(){
-        int[] days = {1,2,3,4,5,6,7,8,9,10,30,31};
-        int[] costs = {2,7,15};
+    public void testMincostTickets() {
+        int[] days = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31};
+        int[] costs = {2, 7, 15};
         assertEquals(new DPMinCostTickets().mincostTickets(days, costs), 17);
     }
 
     @Test
-    public void testAtoi(){
+    public void testAtoi() {
         String[] test = {"42", "  -42", "4193 with words", "words and 231", "-91283472332"};
         assertEquals(Leet.atoi("42"), 42);
         assertEquals(Leet.atoi("  -42"), -42);
@@ -104,11 +104,27 @@ class LeetTest {
     @Test
     void testIntersect() {
         Leet leet = new Leet();
-        int[] nums1 = {1,2,3,4,5,7,7};
-        int[] nums2 = {4,6,7,6,7};
+        int[] nums1 = {1, 2, 3, 4, 5, 7, 7};
+        int[] nums2 = {4, 6, 7, 6, 7};
         int[] result = leet.intersect(nums1, nums2);
         for (int r : result) {
             System.out.println(r);
         }
+    }
+
+    @Test
+    void testTwoSum() {
+        Leet leet = new Leet();
+        int[] nums = {1, 3, 1, 2, 2, 3};
+        List<List<Integer>> lists = leet.twoSum2(nums, 0,4);
+        System.out.println(lists);
+    }
+
+    @Test
+    void testFourSum() {
+        Leet leet = new Leet();
+        int[] nums = {0,0,0,0};
+        List<List<Integer>> lists = leet.fourSum(nums, 0);
+        System.out.println(lists);
     }
 }

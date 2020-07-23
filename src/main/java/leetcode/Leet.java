@@ -69,7 +69,7 @@ public class Leet {
      * @param target
      * @return
      */
-    public static int[] twoSum(int[] nums, int target) {
+    public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> pair = new HashMap<>();
         final int length = nums.length;
         int[] res = new int[2];
@@ -86,13 +86,145 @@ public class Leet {
     }
 
     /**
+     * 两数之和
+     *
+     * @param nums
+     * @param start
+     * @param target
+     * @return 返回值对
+     */
+    public List<List<Integer>> twoSum2(int[] nums, int start, int target) {
+        // 排序
+        Arrays.sort(nums);
+        final int n = nums.length;
+        List<List<Integer>> res = new ArrayList<>();
+        int left = start, right = n - 1;
+        while (left < right) {
+            int leftValue = nums[left];
+            int rightValue = nums[right];
+            int sum = leftValue + rightValue;
+            if (sum < target) {
+                while (left < right && nums[left] == leftValue) {
+                    left++;
+                }
+            } else if (sum > target) {
+                while (left < right && nums[right] == rightValue) {
+                    right--;
+                }
+            } else {
+                List<Integer> t = new ArrayList<>();
+                t.add(nums[left]);
+                t.add(nums[right]);
+                res.add(t);
+                while (left < right && nums[left] == leftValue) {
+                    left++;
+                }
+                while (left < right && nums[right] == rightValue) {
+                    right--;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 三数之和
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        final int n = nums.length;
+        // first < second < third   (index)
+        // 第一重循环
+        for (int first = 0; first < n; first++) {
+            // 重复则直接跳过
+            if (first > 0 && nums[first] == nums[first - 1]) {
+                continue;
+            }
+            int target = -nums[first];
+            // 三重循环位置
+            int third = n - 1;
+            // 第二重循环
+            for (int second = first + 1; second < n; second++) {
+                if (second > first + 1 && nums[second] == nums[second - 1]) {
+                    continue;
+                }
+
+                // 第三重循环
+                while (second < third && nums[second] + nums[third] > target) {
+                    third--;
+                }
+                // 第二个数与第三个数重合 排除
+                if (second == third) {
+                    break;
+                }
+                if (nums[second] + nums[third] == target) {
+                    List<Integer> t = new ArrayList<>(3);
+                    t.add(nums[first]);
+                    t.add(nums[second]);
+                    t.add(nums[third]);
+                    res.add(t);
+                }
+            }
+        }
+        return res;
+    }
+
+    public List<List<Integer>> threeSum2(int[] nums, int start, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        final int n = nums.length;
+        for (int i = start; i < n; i++) {
+            // 重复了
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            List<List<Integer>> twoSum2Result = twoSum2(nums, i + 1, target - nums[i]);
+            for (List<Integer> t : twoSum2Result) {
+                t.add(nums[i]);
+                res.add(t);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 四数之和
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        final int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            // 重复了
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            List<List<Integer>> twoSum3Result = threeSum2(nums, i + 1, target - nums[i]);
+            for (List<Integer> t : twoSum3Result) {
+                t.add(nums[i]);
+                res.add(t);
+            }
+        }
+        return res;
+    }
+
+
+    /**
      * 寻找两个正序数组的中位数
      *
      * @param nums1
      * @param nums2
      * @return
      */
-    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         final int M = nums1.length, N = nums2.length;
         // 偶数时代表中位数左侧与右侧 奇数时right代表中位数
         // 方法1 O(m+n)
@@ -543,7 +675,7 @@ public class Leet {
         try {
             StringBuilder sb = new StringBuilder();
             while ((c = reader.read()) != -1) {
-                if(c == 32){
+                if (c == 32) {
                     int num = Integer.parseInt(sb.toString());
                     Integer count = map.get(num);
                     if (count != null && count > 0) {
@@ -551,7 +683,7 @@ public class Leet {
                         map.put(num, count - 1);
                     }
                     sb = new StringBuilder();
-                }else {
+                } else {
                     sb.append((char) c);
                 }
             }
@@ -569,6 +701,7 @@ public class Leet {
 
     /**
      * LeetCode785
+     *
      * @param graph
      * @return
      */
@@ -579,48 +712,36 @@ public class Leet {
 
     public boolean isBipartite(int[][] graph) {
         final int m = graph.length;
-        if(m == 0) {
+        if (m == 0) {
             throw new RuntimeException();
         }
         int[] colors = new int[m];
         // initial as zeros
         for (int i = 0; i < m; i++) {
-            if(colors[i] == UNCOLORED){
+            if (colors[i] == UNCOLORED) {
                 isBipartiteHelper(i, RED, colors, graph);
             }
-            if(!canBipartite){
+            if (!canBipartite) {
                 return false;
             }
         }
         return canBipartite;
     }
 
-    private void isBipartiteHelper(int node, int color, int[] colors, int[][] graph){
+    private void isBipartiteHelper(int node, int color, int[] colors, int[][] graph) {
         colors[node] = color;
         int neighborColor = color == RED ? BLACK : RED;
-        for(int neighbor : graph[node]){
-            if(colors[neighbor] == UNCOLORED){
+        for (int neighbor : graph[node]) {
+            if (colors[neighbor] == UNCOLORED) {
                 isBipartiteHelper(neighbor, neighborColor, colors, graph);
-                if(!canBipartite){
+                if (!canBipartite) {
                     return;
                 }
-            }else if(colors[neighbor] != neighborColor){
+            } else if (colors[neighbor] != neighborColor) {
                 canBipartite = false;
                 return;
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Leet leet = new Leet();
-        int[][] graph = {
-                {1,3},
-                {0,2},
-                {1,3},
-                {0,2}
-        };
-        boolean bipartite = leet.isBipartite(graph);
-        System.out.println(bipartite);
     }
 
 
