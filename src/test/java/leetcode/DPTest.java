@@ -176,4 +176,12 @@ class DPTest {
         boolean nim = base.canWinNim(6);
         System.out.println(nim);
     }
+
+    @Test
+    void testSplitArray() {
+        Base base = new Base();
+        int[] nums = {7, 2, 5, 10, 8};
+        int result = base.splitArray(nums, 2);
+        System.out.println(result);
+    }
 }

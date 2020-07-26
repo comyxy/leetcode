@@ -127,4 +127,13 @@ class LeetTest {
         List<List<Integer>> lists = leet.fourSum(nums, 0);
         System.out.println(lists);
     }
+
+
+    @Test
+    void testSplitArray() {
+        Leet leet = new Leet();
+        int[] nums = {7,2,5,10,8};
+        int result = leet.splitArray(nums, 2);
+        System.out.println(result);
+    }
 }

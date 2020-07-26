@@ -88,4 +88,59 @@ public class Search {
 
         return res;
     }
+
+
+    /**
+     * LeetCode329
+     * 查找矩阵中的最长递增路径
+     *
+     * @param matrix
+     * @return
+     */
+    public int longestIncreasingPath(int[][] matrix) {
+        final int m = matrix.length;
+        if (m == 0) {
+            throw new IllegalArgumentException();
+        }
+        final int n = matrix[0].length;
+        cache = new int[m][n];
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res = Math.max(res, search(matrix, i, j));
+            }
+        }
+        return res;
+    }
+
+    private int[][] cache;
+
+    private int search(int[][] matrix, int i, int j) {
+        if(cache[i][j] != 0){
+            return cache[i][j];
+        }
+        int res = 0;
+        final int m = matrix.length, n = matrix[0].length;
+        for (Direction d : Direction.values()) {
+            int x = i + d.horizontal;
+            int y = j + d.vertical;
+            if (x >= 0 && x < m && y >= 0 && y < n && matrix[x][y] > matrix[i][j]) {
+                res = Math.max(res, search(matrix, x, y));
+            }
+        }
+        return cache[i][j] = res + 1;
+    }
+
+
+    enum Direction {
+        NORTH(0, 1), SOUTH(0, -1), EAST(1, 0), WEST(-1, 0);
+
+        int horizontal;
+        int vertical;
+
+        Direction(int i, int j) {
+            horizontal = i;
+            vertical = j;
+        }
+    }
 }

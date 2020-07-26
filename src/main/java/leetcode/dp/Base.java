@@ -592,14 +592,50 @@ public class Base {
         dp[0] = triangle.get(0)
                 .get(0);
         for (int i = 1; i < n; i++) {
-            dp[i] = dp[i-1] + triangle.get(i)
+            dp[i] = dp[i - 1] + triangle.get(i)
                     .get(i);
             for (int j = i - 1; j > 0; j--) {
-                dp[j] = Math.min(dp[j-1], dp[j]) + triangle.get(i).get(j);
+                dp[j] = Math.min(dp[j - 1], dp[j]) + triangle.get(i)
+                        .get(j);
             }
             dp[0] = dp[0] + triangle.get(i)
                     .get(0);
         }
-        return Arrays.stream(dp).min().getAsInt();
+        return Arrays.stream(dp)
+                .min()
+                .getAsInt();
+    }
+
+    /**
+     * LeetCode410
+     *
+     * @param nums
+     * @param m
+     * @return
+     */
+    public int splitArray(int[] nums, int m) {
+        final int n = nums.length;
+        // dp[i][j]代表前i个数分成j组后最大连续数组和的最小值
+        int[][] dp = new int[n + 1][m + 1];
+        // sumOfBefore[i]代表前i个数之和
+        int[] sumOfBefore = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            sumOfBefore[i] = nums[i - 1] + sumOfBefore[i - 1];
+        }
+        for (int[] d : dp) {
+            Arrays.fill(d, Integer.MAX_VALUE);
+        }
+        // base 0个数分成0组 结果为0
+        dp[0][0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                for (int k = 0; k < i; k++) {
+                    // dp(i,j)= max[dp(k,j-1),sum(k+1,i)] 对于k从0到i-1 [0,i-1]从中取最小的
+                    dp[i][j] = Math.min(dp[i][j],
+                            Math.max(dp[k][j - 1], sumOfBefore[i] - sumOfBefore[k]));
+                }
+            }
+        }
+        return dp[n][m];
     }
 }

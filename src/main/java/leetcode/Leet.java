@@ -745,4 +745,48 @@ public class Leet {
     }
 
 
+    /**
+     * LeetCode410
+     * 二分法
+     * @param nums
+     * @param m
+     * @return
+     */
+    public int splitArray(int[] nums, int m) {
+        final int n = nums.length;
+        // 下界 数组中的最大数 上界 数组中所以元素和
+        int left = 0, right = 0;
+        for (int num : nums) {
+            right += num;
+            if(left < num){
+                left = num;
+            }
+        }
+        // [left, right]
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            if(check(nums, mid, m)){
+                // true 代表最终结果小于等于mid
+                right = mid;
+            }else{
+                // false 代表最终结果大于mid
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(int[] nums, int mid, int m) {
+        int sum = 0;
+        int blocks = 1;
+        for(int num : nums){
+            if(sum + num > mid){
+                sum = num;
+                blocks++;
+            }else {
+                sum += num;
+            }
+        }
+        return blocks <= m;
+    }
 }
