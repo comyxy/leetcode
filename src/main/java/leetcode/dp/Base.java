@@ -638,4 +638,44 @@ public class Base {
         }
         return dp[n][m];
     }
+
+    /**
+     * LeetCode392
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubsequence(String s, String t) {
+        char[] cs = s.toCharArray();
+        char[] ct = t.toCharArray();
+        final int m = cs.length, n = ct.length;
+        // 预处理
+        // dp(i,j)第i个数（包括第i个数）后字符j第一次出现的位置
+        int[][] dp = new int[n + 1][26];
+        // base
+        for (int j = 0; j < 26; j++) {
+            dp[n][j] = n;
+        }
+        // iter
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = 0; j < 26; j++) {
+                if(ct[i] - 'a' == j){
+                    dp[i][j] = i;
+                }else {
+                    dp[i][j] = dp[i+1][j];
+                }
+            }
+        }
+
+        for (int i = 0, start = 0; i < m; i++) {
+            if(dp[start][cs[i] - 'a'] == n){
+                // dp(start,字符)不存在 start位置后没有该字符了
+                return false;
+            }
+            // 更新start位置到
+            start = dp[start][cs[i] - 'a'] + 1;
+        }
+        return true;
+    }
 }
