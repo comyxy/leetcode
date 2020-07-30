@@ -660,16 +660,16 @@ public class Base {
         // iter
         for (int i = n - 1; i >= 0; i--) {
             for (int j = 0; j < 26; j++) {
-                if(ct[i] - 'a' == j){
+                if (ct[i] - 'a' == j) {
                     dp[i][j] = i;
-                }else {
-                    dp[i][j] = dp[i+1][j];
+                } else {
+                    dp[i][j] = dp[i + 1][j];
                 }
             }
         }
 
         for (int i = 0, start = 0; i < m; i++) {
-            if(dp[start][cs[i] - 'a'] == n){
+            if (dp[start][cs[i] - 'a'] == n) {
                 // dp(start,字符)不存在 start位置后没有该字符了
                 return false;
             }
@@ -677,5 +677,52 @@ public class Base {
             start = dp[start][cs[i] - 'a'] + 1;
         }
         return true;
+    }
+
+    /**
+     * LeetCode343
+     * 整数拆分
+     *
+     * @param n
+     * @return
+     */
+    public int integerBreak(int n) {
+        // dp(i)代表整数i拆分后的最大乘积
+        int[] dp = new int[n + 1];
+        // base 拆分为正整数
+        dp[0] = 0;
+        dp[1] = 0;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j < i; j++) {
+                dp[i] = Math.max(
+                        dp[i],
+                        Math.max(j * (i - j), j * dp[i - j])
+                );
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 数学优化的动态规划
+     *
+     * @param n
+     * @return
+     */
+    public int integerBreak2(int n) {
+        // dp(i)代表整数i拆分后的最大乘积
+        int[] dp = new int[n + 1];
+        // base 拆分为正整数
+        dp[0] = 0;
+        dp[1] = 0;
+        dp[2] = 1;
+        for (int i = 3; i <= n; i++) {
+            // j取2或3最优
+            dp[i] = Math.max(
+                    Math.max(2 * (i - 2), 2 * dp[i - 2]),
+                    Math.max(3 * (i - 3), 3 * dp[i - 3])
+            );
+        }
+        return dp[n];
     }
 }
