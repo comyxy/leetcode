@@ -66,4 +66,56 @@ public class Algebra {
             return (int) Math.pow(3, q) * 2;
         }
     }
+
+    /**
+     * 罗马数字到整数
+     * @param s 罗马字符
+     * @return
+     */
+    public int romanToInt(String s) {
+        assert s != null && s.length() != 0;
+        int sum = 0;
+        int prev = romanCharacterToDigit(s.charAt(0));
+        for (int i = 1; i < s.length(); i++) {
+            int cur = romanCharacterToDigit(s.charAt(i));
+            if(prev >= cur){
+                sum += prev;
+            }else{
+                sum -= prev;
+            }
+            prev = cur;
+        }
+        // 加上最后一个数
+        sum += prev;
+        return sum;
+    }
+
+    private int romanCharacterToDigit(char c){
+        switch (c){
+            case 'I': return 1;
+            case 'V': return 5;
+            case 'X': return 10;
+            case 'L': return 50;
+            case 'C': return 100;
+            case 'D': return 500;
+            case 'M': return 1000;
+            default: return 0;
+        }
+    }
+
+    private static final int[] VALUES = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+    private static final String[] SYMBOLS = {"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
+
+    public String intToRoman(int num) {
+        StringBuilder sb = new StringBuilder();
+        // 每一个可能的值
+        for (int i = 0; i < VALUES.length && num >= 0; i++) {
+            // 贪心
+            while (VALUES[i] <= num) {
+                num -= VALUES[i];
+                sb.append(SYMBOLS[i]);
+            }
+        }
+        return sb.toString();
+    }
 }

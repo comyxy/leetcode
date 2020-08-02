@@ -748,6 +748,7 @@ public class Leet {
     /**
      * LeetCode410
      * 二分法
+     *
      * @param nums
      * @param m
      * @return
@@ -758,17 +759,17 @@ public class Leet {
         int left = 0, right = 0;
         for (int num : nums) {
             right += num;
-            if(left < num){
+            if (left < num) {
                 left = num;
             }
         }
         // [left, right]
-        while(left < right){
+        while (left < right) {
             int mid = left + (right - left) / 2;
-            if(check(nums, mid, m)){
+            if (check(nums, mid, m)) {
                 // true 代表最终结果小于等于mid
                 right = mid;
-            }else{
+            } else {
                 // false 代表最终结果大于mid
                 left = mid + 1;
             }
@@ -779,14 +780,63 @@ public class Leet {
     private boolean check(int[] nums, int mid, int m) {
         int sum = 0;
         int blocks = 1;
-        for(int num : nums){
-            if(sum + num > mid){
+        for (int num : nums) {
+            if (sum + num > mid) {
                 sum = num;
                 blocks++;
-            }else {
+            } else {
                 sum += num;
             }
         }
         return blocks <= m;
+    }
+
+    /**
+     * LeetCode632
+     * 转化为从每一个列表中选择一个数
+     * 使其中最大值-最小值最小
+     *
+     * @param nums
+     * @return
+     */
+    public int[] smallestRange(List<List<Integer>> nums) {
+        // 左右边界结果
+        int left = 0, right = Integer.MAX_VALUE;
+        int range = right - left, max = Integer.MIN_VALUE;
+        // next[i] 代表 第i个列表中选择的索引
+        int[] next = new int[nums.size()];
+        // 最小栈 比较的是每个列表中选出来的数
+        PriorityQueue<Integer> pq = new PriorityQueue<>(
+                Comparator.comparing(index -> nums.get(index)
+                        .get(next[index]))
+        );
+        for (int i = 0; i < nums.size(); i++) {
+            pq.offer(i);
+            // 更新max 代表所有选出来的数中最大值
+            max = Math.max(max, nums.get(i)
+                    .get(next[i]));
+        }
+        while (true) {
+            // 从最小堆弹出最小值的列表索引
+            Integer minIndex = pq.poll();
+            assert minIndex != null;
+            Integer newRange = max - nums.get(minIndex)
+                    .get(next[minIndex]);
+            if (newRange < range) {
+                range = newRange;
+                left = nums.get(minIndex).get(next[minIndex]);
+                right = max;
+            }
+            // 该列表选下一个
+            next[minIndex]++;
+            // 退出条件
+            if(next[minIndex] == nums.get(minIndex).size()){
+                break;
+            }
+            pq.offer(minIndex);
+            // 更新max
+            max = Math.max(max, nums.get(minIndex).get(next[minIndex]));
+        }
+        return new int[]{left, right};
     }
 }

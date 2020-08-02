@@ -361,4 +361,27 @@ public class Binary {
         return res;
     }
 
+    /**
+     * LeetCode114
+     * 将一棵树展开为
+     * @param root 根节点
+     */
+    public void flatten(TreeNode root) {
+        TreeNode cur = root;
+        while(cur != null){
+            if(cur.left != null){
+                TreeNode next = cur.left;
+                // 找cur的前驱节点
+                TreeNode successor = next;
+                while(successor.right != null){
+                    successor = successor.right;
+                }
+                successor.right = cur.right;
+                cur.right = next;
+                cur.left = null;
+            }
+            cur = cur.right;
+        }
+    }
+
 }

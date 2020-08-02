@@ -43,4 +43,20 @@ class TreeTest {
         List<List<Integer>> result = binary.levelOrderBottom(node1);
         System.out.println(result);
     }
+
+    @Test
+    void testFlatten() {
+        Binary binary = new Binary();
+        TreeNode node1 = new TreeNode(1);
+        TreeNode node2 = new TreeNode(2);
+        TreeNode node3 = new TreeNode(3);
+        TreeNode node4 = new TreeNode(15);
+        TreeNode node5 = new TreeNode(21);
+        node1.left = node2;
+        node1.right = node3;
+        node3.left = node4;
+        node3.right = node5;
+        binary.flatten(node1);
+        System.out.println(node1);
+    }
 }

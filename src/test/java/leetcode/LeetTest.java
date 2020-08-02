@@ -3,6 +3,7 @@ package leetcode;
 import leetcode.dp.DPMinCostTickets;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -135,5 +136,38 @@ class LeetTest {
         int[] nums = {7,2,5,10,8};
         int result = leet.splitArray(nums, 2);
         System.out.println(result);
+    }
+
+    @Test
+    void testSmallestRange() {
+        Leet leet = new Leet();
+        List<Integer> list1 = new ArrayList<>();
+        List<Integer> list2 = new ArrayList<>();
+        List<Integer> list3 = new ArrayList<>();
+        list1.add(4);
+        list1.add(10);
+        list1.add(15);
+        list1.add(24);
+        list1.add(26);
+
+        list2.add(0);
+        list2.add(9);
+        list2.add(12);
+        list2.add(20);
+
+        list3.add(5);
+        list3.add(18);
+        list3.add(22);
+        list3.add(30);
+
+        List<List<Integer>> l = new ArrayList<>();
+        l.add(list1);
+        l.add(list2);
+        l.add(list3);
+
+        int[] ints = leet.smallestRange(l);
+        for (int anInt : ints) {
+            System.out.println(anInt);
+        }
     }
 }
