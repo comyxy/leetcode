@@ -44,7 +44,8 @@ public class Solution {
      * @return 修改后字符串
      */
     public String replaceSpace(StringBuffer str) {
-        return str.toString().replace(" ", "%20");
+        return str.toString()
+                .replace(" ", "%20");
     }
 
     /**
@@ -1360,7 +1361,8 @@ public class Solution {
         if (str == null) {
             return null;
         }
-        if (str.trim().equals("")) {
+        if (str.trim()
+                .equals("")) {
             return str;
         }
         String[] s = str.split(" ");
@@ -1719,7 +1721,8 @@ public class Solution {
         //(\\.\\d+)? 小数点出现则后面必有数
         //([eE][+-]?\\d+)? 指数部分eE出现则后面必有数
         String pattern = "[+-]?\\d*(\\.\\d+)?([eE][+-]?\\d+)?";
-        return String.valueOf(str).matches(pattern);
+        return String.valueOf(str)
+                .matches(pattern);
     }
 
     /**
@@ -1876,18 +1879,21 @@ public class Solution {
         return res;
     }
 
-    /** 时间超时
+    /**
+     * 时间超时
      * 树的序列化（前序遍历递归方式）
+     *
      * @param root 根节点
      * @return String字符串
      */
     public String serialize(TreeNode root) {
         return serialize(root, "");
     }
-    private String serialize(TreeNode node, String str){
-        if(node == null) {
+
+    private String serialize(TreeNode node, String str) {
+        if (node == null) {
             str += "null,";
-        } else{
+        } else {
             str += String.valueOf(node.val) + ",";
             str = serialize(node.left, str);
             str = serialize(node.right, str);
@@ -1897,6 +1903,7 @@ public class Solution {
 
     /**
      * 反序列化（前序遍历递归）
+     *
      * @param data 字符串
      * @return 树的根节点
      */
@@ -1905,8 +1912,9 @@ public class Solution {
         List<String> list = new LinkedList<>(Arrays.asList(dataArray));
         return deserialize(list);
     }
-    private TreeNode deserialize(List<String> list){
-        if("null".equals(list.get(0))){
+
+    private TreeNode deserialize(List<String> list) {
+        if ("null".equals(list.get(0))) {
             list.remove(0);
             return null;
         }
@@ -1919,30 +1927,32 @@ public class Solution {
 
     /**
      * 给定一棵二叉搜索树，请找出其中的第k小的结点。
+     *
      * @param pRoot 根节点
-     * @param k k
+     * @param k     k
      * @return 第k小的节点
      */
     TreeNode kthNode(TreeNode pRoot, int k) {
-        if(pRoot == null){
+        if (pRoot == null) {
             return null;
         }
         Stack<TreeNode> st = new Stack<>();
         TreeNode tempNode = pRoot;
         int i = 1;
-        while(!st.empty() || tempNode != null){
-            while(tempNode != null){
+        while (!st.empty() || tempNode != null) {
+            while (tempNode != null) {
                 st.push(tempNode);
                 tempNode = tempNode.left;
             }
             tempNode = st.pop();
-            if(i++ == k){
+            if (i++ == k) {
                 return tempNode;
             }
             tempNode = tempNode.right;
         }
         return null;
     }
+
     /*---如何得到一个数据流中的中位数？
     如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。
     如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
@@ -1955,21 +1965,23 @@ public class Solution {
             return o2.compareTo(o1);
         }
     });
+
     /**
      * 使用insert()方法读取数据流
+     *
      * @param num 数
      */
-    public void insert(Integer num){
+    public void insert(Integer num) {
         count += 1;
-        if((count & 1) == 1){
-            if(!minHeap.isEmpty() && num > minHeap.peek()){
+        if ((count & 1) == 1) {
+            if (!minHeap.isEmpty() && num > minHeap.peek()) {
                 minHeap.offer(num);
                 num = minHeap.poll();
             }
             assert num != null;
             maxHeap.offer(num);
-        }else{
-            if(!maxHeap.isEmpty() && num < maxHeap.peek()){
+        } else {
+            if (!maxHeap.isEmpty() && num < maxHeap.peek()) {
                 maxHeap.offer(num);
                 num = maxHeap.poll();
             }
@@ -1977,52 +1989,55 @@ public class Solution {
             minHeap.offer(num);
         }
     }
+
     /**
      * 使用getMedian()方法获取当前读取数据的中位数
+     *
      * @return 中位数
      */
-    public Double getMedian(){
-        if(count == 0){
+    public Double getMedian() {
+        if (count == 0) {
             return -1.0;
         }
         assert maxHeap.peek() != null;
         assert minHeap.peek() != null;
-        if((count & 1) == 1){
-            return (double)maxHeap.peek();
-        }else{
-            return (maxHeap.peek() + minHeap.peek())/2.0;
+        if ((count & 1) == 1) {
+            return (double) maxHeap.peek();
+        } else {
+            return (maxHeap.peek() + minHeap.peek()) / 2.0;
         }
     }
 
     /**
      * 给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。
-     * @param num 数组
+     *
+     * @param num  数组
      * @param size 窗口大小
      * @return 最大值
      */
-    public ArrayList<Integer> maxInWindows(int [] num, int size) {
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
         int len = num.length;
         ArrayList<Integer> res = new ArrayList<>();
-        if(len < size || size == 0){
+        if (len < size || size == 0) {
             return res;
         }
         LinkedList<Integer> list = new LinkedList<>();
-        for(int i=0;i<len;i++){
+        for (int i = 0; i < len; i++) {
             //滑动窗口左边界索引
             int begin = i - size + 1;
-            if(list.isEmpty()){
+            if (list.isEmpty()) {
                 list.add(i);
             }
             //滑动后窗口左边界大于最大值索引
-            if(begin > list.peekFirst()){
+            if (begin > list.peekFirst()) {
                 list.pollFirst();
             }
             //从双向列表中poll出比滑动后值小的值索引
-            while(!list.isEmpty() && num[list.peekLast()] <= num[i]){
+            while (!list.isEmpty() && num[list.peekLast()] <= num[i]) {
                 list.pollLast();
             }
             list.add(i);
-            if(begin >= 0){
+            if (begin >= 0) {
                 res.add(num[list.peekFirst()]);
             }
         }
@@ -2031,42 +2046,44 @@ public class Solution {
 
     /**
      * 请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径
+     *
      * @param matrix 矩阵
-     * @param rows 行
-     * @param cols 列
-     * @param str 目标字符串
+     * @param rows   行
+     * @param cols   列
+     * @param str    目标字符串
      * @return 路径是否存在
      */
     public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
-        if(rows == 0 || cols == 0){
+        if (rows == 0 || cols == 0) {
             return false;
         }
         assert matrix.length == rows * cols;
         boolean[] visited = new boolean[rows * cols];
-        for(int i=0;i<rows;i++){
-            for(int j=0;j<cols;j++){
-                if(hasPathHelper(matrix, i, j, rows, cols, str, 0, visited)){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (hasPathHelper(matrix, i, j, rows, cols, str, 0, visited)) {
                     return true;
                 }
             }
         }
         return false;
     }
+
     private boolean hasPathHelper(char[] matrix, int i, int j, int rows, int cols,
-                                  char[] str, int k, boolean[] visited){
+                                  char[] str, int k, boolean[] visited) {
         int index = i * cols + j;
-        if(i < 0 || j < 0 || i >= rows || j >= cols || matrix[index] != str[k] ||
-                visited[index]){
+        if (i < 0 || j < 0 || i >= rows || j >= cols || matrix[index] != str[k] ||
+                visited[index]) {
             return false;
         }
-        if(k == str.length - 1){
+        if (k == str.length - 1) {
             return true;
         }
         visited[index] = true;
-        if(hasPathHelper(matrix, i-1, j, rows, cols, str, k+1, visited) ||
-        hasPathHelper(matrix, i+1, j, rows, cols, str, k+1, visited) ||
-        hasPathHelper(matrix, i, j-1,rows, cols, str, k+1,visited) ||
-        hasPathHelper(matrix, i, j+1, rows, cols, str, k+1, visited)){
+        if (hasPathHelper(matrix, i - 1, j, rows, cols, str, k + 1, visited) ||
+                hasPathHelper(matrix, i + 1, j, rows, cols, str, k + 1, visited) ||
+                hasPathHelper(matrix, i, j - 1, rows, cols, str, k + 1, visited) ||
+                hasPathHelper(matrix, i, j + 1, rows, cols, str, k + 1, visited)) {
             return true;
         }
         visited[index] = false;
@@ -2080,6 +2097,7 @@ public class Solution {
      * 例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。
      * 但是，它不能进入方格（35,38），因为3+5+3+8 = 19。
      * 请问该机器人能够达到多少个格子？
+     *
      * @param threshold
      * @param rows
      * @param cols
@@ -2089,26 +2107,28 @@ public class Solution {
         boolean[][] visited = new boolean[rows][cols];
         return movingCountHelper(0, 0, rows, cols, threshold, visited);
     }
+
     private int movingCountHelper(int i, int j, int rows, int cols, int threshold,
-                                  boolean[][] visited){
-        if(i < 0 || i >= rows || j < 0 || j >= cols){
+                                  boolean[][] visited) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols) {
             return 0;
         }
-        if(numSum(i) + numSum(j) > threshold || visited[i][j]){
+        if (numSum(i) + numSum(j) > threshold || visited[i][j]) {
             return 0;
         }
         visited[i][j] = true;
-        return movingCountHelper(i-1, j, rows, cols, threshold, visited) +
-                movingCountHelper(i+1, j, rows, cols, threshold, visited) +
-                movingCountHelper(i, j-1,rows, cols, threshold, visited) +
-                movingCountHelper(i, j+1, rows, cols, threshold, visited) +
+        return movingCountHelper(i - 1, j, rows, cols, threshold, visited) +
+                movingCountHelper(i + 1, j, rows, cols, threshold, visited) +
+                movingCountHelper(i, j - 1, rows, cols, threshold, visited) +
+                movingCountHelper(i, j + 1, rows, cols, threshold, visited) +
                 1;
     }
-    private int numSum(int num){
+
+    private int numSum(int num) {
         int sum = 0;
-        do{
+        do {
             sum += num % 10;
-        }while((num /= 10) > 0);
+        } while ((num /= 10) > 0);
         return sum;
     }
 }

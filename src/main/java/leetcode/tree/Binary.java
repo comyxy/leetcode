@@ -7,17 +7,19 @@ import java.util.*;
 
 /**
  * 二叉树
+ *
  * @date 2020/7/7
  */
 public class Binary {
 
     /**
      * 寻找二叉树的最大深度（自底向上递归）
+     *
      * @param root 根节点
      * @return 最大深度
      */
-    public int maxDepth(TreeNode root){
-        if(root == null) {
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
             return 0;
         }
         return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
@@ -25,17 +27,19 @@ public class Binary {
 
     /**
      * 对称二叉树（自顶向下递归）
+     *
      * @param root 根节点
      * @return 是否为对称二叉树
      */
     public boolean isSymmetric(TreeNode root) {
         return isSymmetricHelper(root, root);
     }
-    private boolean isSymmetricHelper(TreeNode le, TreeNode ri){
-        if(le == null && ri == null){
+
+    private boolean isSymmetricHelper(TreeNode le, TreeNode ri) {
+        if (le == null && ri == null) {
             return true;
         }
-        if(le == null || ri == null){
+        if (le == null || ri == null) {
             return false;
         }
         return le.val == ri.val
@@ -44,16 +48,17 @@ public class Binary {
 
     /**
      * 路径和
+     *
      * @param root 根节点
-     * @param sum 待查找的路径和
+     * @param sum  待查找的路径和
      * @return 是否存在
      */
     public boolean hasPathSum(TreeNode root, int sum) {
-        if(root == null){
+        if (root == null) {
             return false;
         }
         sum -= root.val;
-        if(root.left == null && root.right == null){
+        if (root.left == null && root.right == null) {
             return sum == 0;
         }
         return hasPathSum(root.left, sum) || hasPathSum(root.right, sum);
@@ -61,7 +66,8 @@ public class Binary {
 
     /**
      * 根据中序和后序遍历得到二叉树
-     * @param inorder 中序遍历数组
+     *
+     * @param inorder   中序遍历数组
      * @param postorder 后续遍历数组
      * @return 二叉树的根节点
      */
@@ -69,10 +75,10 @@ public class Binary {
         assert inorder.length == postorder.length;
 
         int len = inorder.length;
-        if(len == 0) {
+        if (len == 0) {
             return null;
         }
-        if(len == 1) {
+        if (len == 1) {
             return new TreeNode(inorder[0]);
         }
         /*---递归复制数组方式---*/
@@ -95,16 +101,17 @@ public class Binary {
         return buildTreeByInAndPostHelper(inorder, postorder, 0, len - 1,
                 0, len - 1);
     }
+
     @SuppressWarnings("DuplicatedCode")
     private TreeNode buildTreeByInAndPostHelper(int[] inorder, int[] postorder, int inorderLeft, int inorderRight,
-                                                int postorderLeft, int postorderRight){
-        if(inorderLeft > inorderRight || postorderLeft > postorderRight) {
+                                                int postorderLeft, int postorderRight) {
+        if (inorderLeft > inorderRight || postorderLeft > postorderRight) {
             return null;
         }
         int rootVal = postorder[postorderRight];
         int dividePoint = 0;
-        for(int i = inorderLeft;i <= inorderRight;i++){
-            if(inorder[i] == rootVal){
+        for (int i = inorderLeft; i <= inorderRight; i++) {
+            if (inorder[i] == rootVal) {
                 dividePoint = i;
                 break;
             }
@@ -119,32 +126,34 @@ public class Binary {
 
     /**
      * 先序遍历和中序遍历得到二叉树
-     * @param preorder  先序遍历
-     * @param inorder 中序遍历
+     *
+     * @param preorder 先序遍历
+     * @param inorder  中序遍历
      * @return 二叉树根节点
      */
     public TreeNode buildTreeByPreAndIn(int[] preorder, int[] inorder) {
         assert preorder.length == inorder.length;
         int len = inorder.length;
-        if(len == 0) {
+        if (len == 0) {
             return null;
         }
-        if(len == 1) {
+        if (len == 1) {
             return new TreeNode(inorder[0]);
         }
 
-        return buildTreeHelperByPreAndIn(preorder, inorder, 0, len - 1, 0, len -1);
+        return buildTreeHelperByPreAndIn(preorder, inorder, 0, len - 1, 0, len - 1);
     }
+
     @SuppressWarnings("DuplicatedCode")
     private TreeNode buildTreeHelperByPreAndIn(int[] preorder, int[] inorder, int preorderLeft, int preorderRight,
-                                               int inorderLeft, int inorderRight){
-        if(preorderLeft > preorderRight || inorderLeft > inorderRight) {
+                                               int inorderLeft, int inorderRight) {
+        if (preorderLeft > preorderRight || inorderLeft > inorderRight) {
             return null;
         }
         int rootVal = preorder[preorderLeft];
         int dividePoint = 0;
-        for(int i = inorderLeft;i <= inorderRight;i++){
-            if(inorder[i] == rootVal){
+        for (int i = inorderLeft; i <= inorderRight; i++) {
+            if (inorder[i] == rootVal) {
                 dividePoint = i;
                 break;
             }
@@ -161,6 +170,7 @@ public class Binary {
 
     /**
      * 填充每个节点的下一个右侧节点指针（完美二叉树）
+     *
      * @param root 根节点
      * @return 修改后的根节点
      */
@@ -184,9 +194,9 @@ public class Binary {
 //            }
 //        }
         /*---递归方法（自顶向下递归）---*/
-        if(root != null && root.left != null){
+        if (root != null && root.left != null) {
             root.left.next = root.right;
-            if(root.next != null){
+            if (root.next != null) {
                 root.right.next = root.next.left;
             }
             connectPerfectBinaryTree(root.left);
@@ -197,6 +207,7 @@ public class Binary {
 
     /**
      * 填充每个节点的下一个右侧节点指针（非完美二叉树）
+     *
      * @param root 根节点
      * @return 修改后的根节点
      */
@@ -221,15 +232,15 @@ public class Binary {
 //        }
         /*---额外空间优化（cur指针上一层与tail指针当前层）---*/
         NextNode cur = root;
-        while(cur != null){
+        while (cur != null) {
             NextNode dummy = new NextNode();
             NextNode tail = dummy;
-            while(cur != null){//遍历上一层节点
-                if(cur.left != null){
+            while (cur != null) {//遍历上一层节点
+                if (cur.left != null) {
                     tail.next = cur.left;
                     tail = tail.next;
                 }
-                if(cur.right != null){
+                if (cur.right != null) {
                     tail.next = cur.right;
                     tail = tail.next;
                 }
@@ -242,41 +253,47 @@ public class Binary {
 
     /**
      * 二叉树的最近公共祖先（二叉树中节点值不同，q和p一定在树中存在）
+     *
      * @param root 根节点
-     * @param p 节点p
-     * @param q 节点q
+     * @param p    节点p
+     * @param q    节点q
      * @return 公共祖先节点
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         lowestCommonAncestorHelper(root, p, q);
         return res;
     }
+
     private TreeNode res = null;
-    private boolean lowestCommonAncestorHelper(TreeNode node, TreeNode p, TreeNode q){
-        if(node == null) {
+
+    private boolean lowestCommonAncestorHelper(TreeNode node, TreeNode p, TreeNode q) {
+        if (node == null) {
             return false;
         }
         int left = lowestCommonAncestorHelper(node.left, p, q) ? 1 : 0;
         int right = lowestCommonAncestorHelper(node.right, p, q) ? 1 : 0;
         int mid = (node == p || node == q) ? 1 : 0;
-        if(left + right + mid >= 2){
+        if (left + right + mid >= 2) {
             res = node;
         }
         return left + right + mid > 0;
     }
 
-    /** 时间超时
+    /**
+     * 时间超时
      * 树的序列化（前序遍历递归方式）
+     *
      * @param root 根节点
      * @return String字符串
      */
     public String serialize(TreeNode root) {
         return serialize(root, "");
     }
-    private String serialize(TreeNode node, String str){
-        if(node == null) {
+
+    private String serialize(TreeNode node, String str) {
+        if (node == null) {
             str += "null,";
-        } else{
+        } else {
             str += String.valueOf(node.val) + ",";
             str = serialize(node.left, str);
             str = serialize(node.right, str);
@@ -286,6 +303,7 @@ public class Binary {
 
     /**
      * 反序列化（前序遍历递归）
+     *
      * @param data 字符串
      * @return 树的根节点
      */
@@ -294,8 +312,9 @@ public class Binary {
         List<String> list = new LinkedList<>(Arrays.asList(dataArray));
         return deserialize(list);
     }
-    private TreeNode deserialize(List<String> list){
-        if("null".equals(list.get(0))){
+
+    private TreeNode deserialize(List<String> list) {
+        if ("null".equals(list.get(0))) {
             list.remove(0);
             return null;
         }
@@ -310,6 +329,7 @@ public class Binary {
     /**
      * LeetCode110
      * 给定一个二叉树，判断它是否是高度平衡的二叉树
+     *
      * @param root
      * @return
      */
@@ -320,13 +340,13 @@ public class Binary {
 
     private boolean balanced = true;
 
-    private int isBalancedHelper(TreeNode node){
-        if(node == null){
+    private int isBalancedHelper(TreeNode node) {
+        if (node == null) {
             return 0;
         }
         int leftHeight = isBalancedHelper(node.left);
         int rightHeight = isBalancedHelper(node.right);
-        if(leftHeight - rightHeight > 1 || rightHeight - leftHeight > 1){
+        if (leftHeight - rightHeight > 1 || rightHeight - leftHeight > 1) {
             balanced = false;
         }
         return Math.max(leftHeight, rightHeight) + 1;
@@ -336,6 +356,7 @@ public class Binary {
     /**
      * LeetCode107
      * 给定一个二叉树，返回其节点值自底向上的层次遍历
+     *
      * @param root
      * @return
      */
@@ -343,16 +364,16 @@ public class Binary {
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         List<List<Integer>> res = new ArrayList<>();
-        if(root == null) return res;
-        while (!queue.isEmpty()){
+        if (root == null) return res;
+        while (!queue.isEmpty()) {
             int n = queue.size();
             List<Integer> t = new ArrayList<>();
             for (int i = 0; i < n; i++) {
                 TreeNode poll = queue.poll();
                 t.add(poll.val);
-                if(poll.left != null)
+                if (poll.left != null)
                     queue.offer(poll.left);
-                if(poll.right != null)
+                if (poll.right != null)
                     queue.offer(poll.right);
             }
             res.add(t);
@@ -363,17 +384,18 @@ public class Binary {
 
     /**
      * LeetCode114
-     * 将一棵树展开为
+     * 将一棵树展开
+     *
      * @param root 根节点
      */
     public void flatten(TreeNode root) {
         TreeNode cur = root;
-        while(cur != null){
-            if(cur.left != null){
+        while (cur != null) {
+            if (cur.left != null) {
                 TreeNode next = cur.left;
                 // 找cur的前驱节点
                 TreeNode successor = next;
-                while(successor.right != null){
+                while (successor.right != null) {
                     successor = successor.right;
                 }
                 successor.right = cur.right;
@@ -384,4 +406,93 @@ public class Binary {
         }
     }
 
+    /**
+     * LeetCode99 恢复二叉搜索树
+     *
+     * @param root 根节点
+     */
+    public void recoverTree(TreeNode root) {
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode x = null, y = null, prev = null, cur = root;
+
+        while(!stack.isEmpty() || cur != null){
+            // 先找左边的节点
+            while(cur != null){
+                stack.push(cur);
+                cur = cur.left;
+            }
+            // 更新cur目前节点
+            cur = stack.pop();
+            // 确定x y
+            if(prev != null && cur.val < prev.val){
+                y = cur;
+                if(x == null){
+                    x = prev;
+                }else {
+                    break;
+                }
+            }
+            // 更新prev上一个中序遍历节点
+            prev = cur;
+            // 当前节点的右子树
+            cur = cur.right;
+        }
+
+        int tmp = x.val;
+        x.val = y.val;
+        y.val = tmp;
+    }
+
+    /**
+     * LeetCode99 恢复二叉搜索树
+     * Morris 遍历方法
+     * @param root 根节点
+     */
+    public void recoverTree2(TreeNode root) {
+        TreeNode x = null, y = null, prev = null, cur = root, predecessor = null;
+
+        while(cur != null){
+            if(cur.left != null){
+                // 左子树不为空 先找predecessor
+                predecessor = cur.left;
+                while(predecessor.right != null && predecessor.right != cur){
+                    // 往右子树找 同时 不找连接后predecessor
+                    predecessor = predecessor.right;
+                }
+
+                if(predecessor.right == null){
+                    predecessor.right = cur;
+                    cur = cur.left;
+                }else {
+                    // cur节点的左子树已经遍历完成
+                    //////////////////////////
+                    if(prev != null && cur.val < prev.val){
+                        y = cur;
+                        if(x == null){
+                            x = prev;
+                        }
+                    }
+                    prev = cur;
+                    //////////////////////////
+                    // 断开predecessor建立的连接 同时达到cur的右子树
+                    predecessor.right = null;
+                    cur = cur.right;
+                }
+            }else {
+                //////////////////////////
+                if(prev != null && cur.val < prev.val){
+                    y = cur;
+                    if(x == null){
+                        x = prev;
+                    }
+                }
+                prev = cur;
+                //////////////////////////
+                cur = cur.right;
+            }
+        }
+        int tmp = x.val;
+        x.val = y.val;
+        y.val = tmp;
+    }
 }
