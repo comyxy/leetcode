@@ -839,4 +839,25 @@ public class Leet {
         }
         return new int[]{left, right};
     }
+
+    /**
+     * LeetCode696
+     * @param s
+     * @return
+     */
+    public int countBinarySubstrings(String s) {
+        int index = 0, res = 0, prevCount = 0;
+        final int n = s.length();
+        while(index < n){
+            int count = 0;
+            char c = s.charAt(index);
+            while(index < n && c == s.charAt(index)){
+                index++;
+                count++;
+            }
+            res += Math.min(count, prevCount);
+            prevCount = count;
+        }
+        return res;
+    }
 }

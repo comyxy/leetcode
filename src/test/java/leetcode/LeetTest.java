@@ -170,4 +170,11 @@ class LeetTest {
             System.out.println(anInt);
         }
     }
+
+    @Test
+    void testCountBinarySubstrings() {
+        Leet leet = new Leet();
+        int result = leet.countBinarySubstrings("00110011");
+        assertEquals(6, result);
+    }
 }

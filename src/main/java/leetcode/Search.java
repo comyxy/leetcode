@@ -116,7 +116,7 @@ public class Search {
     private int[][] cache;
 
     private int search(int[][] matrix, int i, int j) {
-        if(cache[i][j] != 0){
+        if (cache[i][j] != 0) {
             return cache[i][j];
         }
         int res = 0;
@@ -142,5 +142,55 @@ public class Search {
             horizontal = i;
             vertical = j;
         }
+    }
+
+    /**
+     * LeetCode130
+     *
+     * @param board
+     */
+    public void solve(char[][] board) {
+        m = board.length;
+        if (m == 0) {
+            return;
+        }
+        n = board[0].length;
+
+        // 找到与边界连接的O
+        for (int i = 0; i < m; i++) {
+            solveDfs(board, i, 0);
+            solveDfs(board, i, n - 1);
+        }
+        for (int j = 1; j < n - 1; j++) {
+            solveDfs(board, 0, j);
+            solveDfs(board, m - 1, j);
+        }
+
+        //
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if(board[i][j] == 'A'){
+                    board[i][j] = 'O';
+                }else if(board[i][j] == 'O'){
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    private int m;
+    private int n;
+
+    private void solveDfs(char[][] board, int x, int y) {
+        if (x < 0 || x >= m || y < 0 || y >= n
+                || board[x][y] != 'O') {
+            return;
+        }
+        // 已遍历
+        board[x][y] = 'A';
+        solveDfs(board, x + 1, y);
+        solveDfs(board, x - 1, y);
+        solveDfs(board, x, y + 1);
+        solveDfs(board, x, y - 1);
     }
 }
