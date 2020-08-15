@@ -1,9 +1,8 @@
 package leetcode.graph;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import leetcode.node.GraphNode;
+
+import java.util.*;
 
 /**
  * 2020/8/4
@@ -167,4 +166,34 @@ public class Graph {
         }
         return visited == numCourses;
     }
+
+
+    /**
+     * LeetCode133 克隆图
+     * @param node
+     * @return
+     */
+    public GraphNode cloneGraph(GraphNode node) {
+        if(node == null){
+            return null;
+        }
+        // 已经被克隆过 返回克隆的节点
+        if(cloneGraphVisited.containsKey(node)){
+            return cloneGraphVisited.get(node);
+        }
+
+        GraphNode cloneNode = new GraphNode(node.val, new ArrayList<>());
+        cloneGraphVisited.put(node, cloneNode);
+
+        for (GraphNode neighborNode : node.neighbors){
+            // dfs 递归深度优先搜索
+            cloneNode.neighbors.add(cloneGraph(neighborNode));
+        }
+
+        return cloneNode;
+    }
+
+    private Map<GraphNode, GraphNode> cloneGraphVisited = new HashMap<>();
+
+
 }
