@@ -145,11 +145,11 @@ public class Base {
                 // 加乘具有交换律 跳过已经计算过的
                 continue;
               }
-              if(k == 0){
+              if(l == 0){
                 backtraceList.add(list.get(i) + list.get(j));
-              }else if(k == 1){
+              }else if(l == 1){
                 backtraceList.add(list.get(i) * list.get(j));
-              }else if(k == 2){
+              }else if(l == 2){
                 backtraceList.add(list.get(i) - list.get(j));
               }else{
                 // 除法注意不能除0
