@@ -44,10 +44,7 @@ public class Base {
     return res;
   }
 
-  /**
-   * LeetCode93 复原IP地址
-   *
-   */
+  /** LeetCode93 复原IP地址 */
   public List<String> restoreIpAddresses(String s) {
     segments = new int[4];
     ipRes = new ArrayList<>();
@@ -105,13 +102,14 @@ public class Base {
 
   /**
    * LeetCode 24点游戏
+   *
    * @param nums 4张数字牌
    * @return 能否凑成24点
    */
   public boolean judgePoint24(int[] nums) {
     List<Double> intToDoubleList = new ArrayList<>(nums.length);
     for (int num : nums) {
-      intToDoubleList.add((double)num);
+      intToDoubleList.add((double) num);
     }
     return judgePoint24BackTrace(intToDoubleList);
   }
@@ -122,53 +120,53 @@ public class Base {
   private boolean judgePoint24BackTrace(List<Double> list) {
     final int size = list.size();
     // 没有数字直接返回false
-    if(size == 0){
+    if (size == 0) {
       return false;
-    }else if(size == 1){
+    } else if (size == 1) {
       // 只剩最后一个数字 与24比较判断
       return Math.abs(list.get(0) - TWENTY_FOUR) < EPSILON;
     }
     // 否则选择两个数字
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
-        if(i != j){
+        if (i != j) {
           // 不能取位置相同的数字
           List<Double> backtraceList = new ArrayList<>(size - 1);
           for (int k = 0; k < size; k++) {
-            if(k != i && k != j){
+            if (k != i && k != j) {
               // 把没有选中的加入用于回溯的列表
               backtraceList.add(list.get(k));
             }
-            // 选择4中操作 0 1 2 3 加乘减除
-            for (int l = 0; l < 4; l++) {
-              if(l <= 1 && i > j){
-                // 加乘具有交换律 跳过已经计算过的
-                continue;
-              }
-              if(l == 0){
-                backtraceList.add(list.get(i) + list.get(j));
-              }else if(l == 1){
-                backtraceList.add(list.get(i) * list.get(j));
-              }else if(l == 2){
-                backtraceList.add(list.get(i) - list.get(j));
-              }else{
-                // 除法注意不能除0
-                if(Math.abs(list.get(j)) < EPSILON){
-                  continue;
-                }else {
-                  backtraceList.add(list.get(i) / list.get(j));
-                }
-              }
-
-              // 递归处理
-              boolean r = judgePoint24BackTrace(backtraceList);
-              // 满足24
-              if(r){
-                return true;
-              }
-              // 不满足24 回溯到添加前
-              backtraceList.remove(backtraceList.size() - 1);
+          }
+          // 选择4中操作 0 1 2 3 加乘减除
+          for (int l = 0; l < 4; l++) {
+            if (l <= 1 && i > j) {
+              // 加乘具有交换律 跳过已经计算过的
+              continue;
             }
+            if (l == 0) {
+              backtraceList.add(list.get(i) + list.get(j));
+            } else if (l == 1) {
+              backtraceList.add(list.get(i) * list.get(j));
+            } else if (l == 2) {
+              backtraceList.add(list.get(i) - list.get(j));
+            } else {
+              // 除法注意不能除0
+              if (Math.abs(list.get(j)) < EPSILON) {
+                continue;
+              } else {
+                backtraceList.add(list.get(i) / list.get(j));
+              }
+            }
+
+            // 递归处理
+            boolean r = judgePoint24BackTrace(backtraceList);
+            // 满足24
+            if (r) {
+              return true;
+            }
+            // 不满足24 回溯到添加前
+            backtraceList.remove(backtraceList.size() - 1);
           }
         }
       }

@@ -23,6 +23,7 @@ public class BacktraceTest {
     assertTrue(backtrace.judgePoint24(nums));
     assertFalse(backtrace.judgePoint24(new int[]{1,2,1,2}));
     assertTrue(backtrace.judgePoint24(new int[]{1,9,1,2}));
+    assertTrue(backtrace.judgePoint24(new int[]{4,9,6,7}));
   }
 
   @Test
