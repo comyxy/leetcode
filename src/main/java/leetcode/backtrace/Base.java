@@ -173,4 +173,40 @@ public class Base {
     }
     return false;
   }
+
+  /**
+   * LeetCode491 递增子序列
+   *
+   * @return 递增子序列的列表
+   */
+  public List<List<Integer>> findSubsequences(int[] nums) {
+    findSubsequencesDfs(0, Integer.MIN_VALUE, nums);
+    return findSeqRet;
+  }
+
+  private List<Integer> findSeqTemp = new ArrayList<>();
+
+  private List<List<Integer>> findSeqRet = new ArrayList<>();
+
+  private void findSubsequencesDfs(int index, int last, int[] nums) {
+    if (index == nums.length) {
+      // 递归到末尾
+      if (findSeqTemp.size() >= 2) {
+        // 子序列数量大于等于2
+        findSeqRet.add(new ArrayList<>(findSeqTemp));
+      }
+      return;
+    }
+
+    if (nums[index] >= last) {
+      // 递增
+      findSeqTemp.add(nums[index]);
+      findSubsequencesDfs(index + 1, nums[index], nums);
+      findSeqTemp.remove(findSeqTemp.size() - 1);
+    }
+    if(nums[index] != last){
+      // 排除取相同数
+      findSubsequencesDfs(index + 1, last, nums);
+    }
+  }
 }

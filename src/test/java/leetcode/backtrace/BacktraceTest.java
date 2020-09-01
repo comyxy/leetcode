@@ -38,4 +38,10 @@ public class BacktraceTest {
     List<TreeNode> generateTrees = backtrace.generateTrees(3);
     assertEquals(5, generateTrees.size());
   }
+
+  @Test
+  void testFindSubSeq(){
+    int[] nums = new int[]{4, 6, 7, 7};
+    assertEquals(8, backtrace.findSubsequences(nums).size());
+  }
 }

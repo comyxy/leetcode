@@ -3,7 +3,7 @@ package leetcode;
 import java.util.Arrays;
 
 /**
- * @date 2020/6/15
+ * 2020/6/15
  */
 public class Search {
     /**
