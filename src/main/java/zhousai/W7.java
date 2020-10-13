@@ -1,5 +1,7 @@
 package zhousai;
 
+import leetcode.node.ListNode;
+
 import java.util.*;
 
 /** 2020/10/11 */
@@ -135,5 +137,84 @@ public class W7 {
     }
     // update
     start = last;
+  }
+
+  private ListNode merge(ListNode lo, ListNode hi) {
+    ListNode dummy = new ListNode(0);
+    ListNode p = dummy;
+    while (lo != null && hi != null) {
+      if (lo.val < hi.val) {
+        p.next = lo;
+        p = p.next;
+        lo = lo.next;
+      } else {
+        p.next = hi;
+        p = p.next;
+        hi = hi.next;
+      }
+    }
+    p.next = lo != null ? lo : hi;
+    return dummy.next;
+  }
+
+  private ListNode cut(ListNode head, int size){
+    ListNode p = head;
+    while(--size > 0 && p != null){
+      p = p.next;
+    }
+    if(p == null){
+      return null;
+    }
+    ListNode n = p.next;
+    p.next = null;
+    return n;
+  }
+
+  public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    int length = 0;
+    ListNode p = head;
+    while (p != null) {
+      p = p.next;
+      length++;
+    }
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    for (int sz = 1; sz < length; sz = sz + sz) {
+      ListNode cur = dummy.next;
+      ListNode tail = dummy;
+      while(cur != null){
+        ListNode left = cur;
+        ListNode right = cut(left, sz);
+        cur = cut(right, sz);
+        tail.next = merge(left, right);
+        while(tail.next != null){
+          tail = tail.next;
+        }
+      }
+    }
+    return dummy.next;
+  }
+
+  public static void main(String[] args) {
+    W7 w7 = new W7();
+    ListNode l1 = new ListNode(3);
+    ListNode l2 = new ListNode(4);
+    ListNode l3 = new ListNode(10);
+    ListNode l4 = new ListNode(2);
+    ListNode l5 = new ListNode(7);
+    ListNode l6 = new ListNode(9);
+    l1.next = l2;
+    l2.next = l3;
+    l3.next = l4;
+    l4.next = l5;
+    l5.next = l6;
+    ListNode merge = w7.sortList(l1);
+    while (merge != null) {
+      System.out.println(merge.val);
+      merge = merge.next;
+    }
   }
 }
