@@ -1,7 +1,6 @@
 package zhousai;
 
-import java.util.Arrays;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /** 2020/11/1 */
 public class W10 {
@@ -109,5 +108,85 @@ public class W10 {
       }
     }
     return sb.toString();
+  }
+
+  public List<String> wordBreak(String s, List<String> wordDict) {
+    Trie trie = new Trie();
+    for(String word: wordDict){
+      trie.put(word);
+    }
+    Set<String> set = new HashSet<>(wordDict);
+    int len = s.length();
+    // dp[i] 代表第i个字符到结尾组成的字符串能否被拆分为字典中的单词（i=0表示整个句子 i=n表示空）
+    boolean[] dp = new boolean[len+1];
+    dp[len] = true;
+    for(int i=len-1;i>=0;i--){
+      TrieNode cur = trie.root;
+      for(int j=i;j<len;j++){
+        int index = s.charAt(j) - 'a';
+        if(cur.next[index] == null){
+          break;
+        }else if(cur.next[index].isEnd){
+          dp[i] = dp[j+1];
+          if(dp[i]) break;
+        }
+        cur = cur.next[index];
+      }
+    }
+
+    List<String> ans = new ArrayList<>();
+    if(dp[0]){
+      Deque<String> path = new ArrayDeque<>();
+      dfs(s, 0, set, dp, path, ans);
+    }
+    return ans;
+  }
+
+  private void dfs(String s, int len, Set<String> set, boolean[] dp, Deque<String> path, List<String> ans){
+    if(len == s.length()){
+      ans.add(String.join(" ", path));
+      return;
+    }
+
+    for(int i=len;i<s.length();i++){
+      String sub = s.substring(len, i+1);
+      // System.out.println(sub + " " + dp[i+1]  + " " + (i+1));
+      if(set.contains(sub) && dp[i+1]){
+        path.addLast(sub);
+        dfs(s, i+1, set, dp, path, ans);
+        path.removeLast();
+      }
+    }
+  }
+
+  static class Trie{
+    TrieNode root;
+
+    Trie(){
+      root = new TrieNode();
+    }
+
+    void put(String word){
+      int len = word.length();
+      TrieNode cur = root;
+      for(int i=0;i<len;i++){
+        int index = word.charAt(i) - 'a';
+        if(cur.next[index] == null){
+          cur.next[index] = new TrieNode();
+        }
+        cur = cur.next[index];
+      }
+      cur.isEnd = true;
+    }
+  }
+
+  static class TrieNode{
+    TrieNode[] next;
+    boolean isEnd;
+
+    TrieNode(){
+      next = new TrieNode[26];
+      isEnd = false;
+    }
   }
 }
