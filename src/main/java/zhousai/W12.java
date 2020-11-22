@@ -1,5 +1,7 @@
 package zhousai;
 
+import javafx.util.Pair;
+
 import java.util.*;
 
 /** 2020/11/15 */
@@ -137,7 +139,7 @@ public class W12 {
       }
     }
 
-    return dfs(0, 0, introvertsCount,extrovertsCount);
+    return dfs(0, 0, introvertsCount, extrovertsCount);
   }
 
   private int[][] mask_span = new int[729][6];
@@ -148,16 +150,16 @@ public class W12 {
   private int[][][][] dp = new int[729][6][7][7];
   private int m, n, n3;
 
-  private int dfs(int mask_last, int row, int nx, int wx){
-    if(row == m || nx + wx == 0){
+  private int dfs(int mask_last, int row, int nx, int wx) {
+    if (row == m || nx + wx == 0) {
       return 0;
     }
-    if(dp[mask_last][row][nx][wx] != -1){
+    if (dp[mask_last][row][nx][wx] != -1) {
       return dp[mask_last][row][nx][wx];
     }
     int best = 0;
     for (int mask = 0; mask < n3; mask++) {
-      if(nx_inner[mask] > nx || wx_inner[mask] > wx){
+      if (nx_inner[mask] > nx || wx_inner[mask] > wx) {
         continue;
       }
       int score = score_inner[mask] + score_outer[mask][mask_last];
@@ -178,6 +180,55 @@ public class W12 {
       return 40;
     }
     return -10;
+  }
+
+  /**
+   * LeetCode391 完美矩形
+   */
+  public boolean isRectangleCover(int[][] rectangles) {
+    // 完美矩形的四个端点
+    int x2 = Integer.MIN_VALUE, y2 = Integer.MIN_VALUE;
+    int x1 = Integer.MAX_VALUE, y1 = Integer.MAX_VALUE;
+    // 实际面积
+    int actual_area = 0;
+    // 每个小矩形对应的 四个端点
+    Set<Pair<Integer, Integer>> set = new HashSet<>();
+    for (int[] rec : rectangles) {
+      int tx1 = rec[0], ty1 = rec[1];
+      int tx2 = rec[2], ty2 = rec[3];
+      // 每个小矩形对应的 四个端点
+      Pair<Integer, Integer> p1 = new Pair<>(tx1, ty1);
+      Pair<Integer, Integer> p2 = new Pair<>(tx1, ty2);
+      Pair<Integer, Integer> p3 = new Pair<>(tx2, ty1);
+      Pair<Integer, Integer> p4 = new Pair<>(tx2, ty2);
+      // 确定小矩形组成大矩形的端点
+      for (Pair<Integer, Integer> point : Arrays.asList(p1, p2, p3, p4)) {
+        if (set.contains(point)) {
+          set.remove(point);
+        } else {
+          set.add(point);
+        }
+      }
+
+      actual_area += (tx2 - tx1) * (ty2 - ty1);
+
+      x1 = Math.min(x1, tx1);
+      y1 = Math.min(y1, ty1);
+      x2 = Math.max(x2, tx2);
+      y2 = Math.max(y2, ty2);
+    }
+
+    int expect_area = (x2 - x1) * (y2 - y1);
+    if (actual_area != expect_area) return false;
+    // 完美矩形只能有4个端点
+    if (set.size() != 4) return false;
+    // 两种方式得到的端点必须相同
+    if (!set.contains(new Pair<>(x1, y1))) return false;
+    if (!set.contains(new Pair<>(x1, y2))) return false;
+    if (!set.contains(new Pair<>(x2, y1))) return false;
+    if (!set.contains(new Pair<>(x2, y2))) return false;
+
+    return true;
   }
 
   public static void main(String[] args) {
