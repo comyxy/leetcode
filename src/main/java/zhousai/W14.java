@@ -106,11 +106,6 @@ public class W14 {
     public static void main(String[] args) {
         W14 w = new W14();
 
-        int[] nums = {71, 18, 52, 29, 55, 73, 24, 42, 66, 8, 80, 2};
-        int k = 3;
-        int[] mostCompetitive = w.mostCompetitive(nums, k);
-        for (int i : mostCompetitive) {
-            System.out.println(i);
-        }
+        Scanner scanner = new Scanner(System.in);
     }
 }
