@@ -8,6 +8,9 @@ import java.util.Map;
  * @date 2020/6/6
  */
 public class LRUCache {
+    /**
+     * 双向链表节点
+     */
     static class DoubleLinkedNode{
         private int key;
         private int value;
@@ -16,11 +19,25 @@ public class LRUCache {
         public DoubleLinkedNode(){}
     }
 
-    private int capacity; // 规定容量
-    private int size; // 实际存放了多少数据
+    /**
+     * 规定容量
+      */
+    private int capacity;
+    /**
+     * 实际存放了多少数据
+     */
+    private int size;
+
     private Map<Integer, DoubleLinkedNode> cache;
-    private DoubleLinkedNode head; // dummy head
-    private DoubleLinkedNode tail; // dummy tail
+    /**
+     * dummy head
+     */
+    private DoubleLinkedNode head;
+    /**
+     * dummy tail
+     */
+    private DoubleLinkedNode tail;
+
 
     public LRUCache(int capacity) {
         this.capacity = capacity;
@@ -35,7 +52,7 @@ public class LRUCache {
     public int get(int key) {
         DoubleLinkedNode node = cache.get(key);
         if(node == null){
-            return -1; // 未找到
+            return -1;
         }
 
         moveToHead(node);
@@ -45,11 +62,14 @@ public class LRUCache {
     public void put(int key, int value) {
         DoubleLinkedNode node = cache.get(key);
         if(node == null){
+            // 新增
             DoubleLinkedNode newNode = new DoubleLinkedNode();
             newNode.key = key;
             newNode.value = value;
-            cache.put(key, newNode); //放入cache
-            addToHead(newNode); // 添加到链表头部
+            //放入cache
+            cache.put(key, newNode);
+            // 添加到链表头部
+            addToHead(newNode);
             size++; // 大小加1
             if(size > capacity){
                 // 大小超过容量 移除链表尾节点
@@ -72,11 +92,6 @@ public class LRUCache {
         head.next = node;
     }
 
-    private void moveToHead(DoubleLinkedNode node){
-        remove(node);
-        addToHead(node);
-    }
-
     private void remove(DoubleLinkedNode node){
         node.prev.next = node.next;
         node.next.prev = node.prev;
@@ -84,12 +99,13 @@ public class LRUCache {
         node.prev = null;
     }
 
+    private void moveToHead(DoubleLinkedNode node){
+        remove(node);
+        addToHead(node);
+    }
+
     private DoubleLinkedNode removeFromTail(){
         DoubleLinkedNode removedNode = this.tail.prev;
-        // this.tail.prev = removedNode.prev;
-        // removedNode.prev.next = this.tail;
-        // removedNode.next = null;
-        // removedNode.prev = null;
         remove(removedNode);
         return removedNode;
     }
