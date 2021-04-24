@@ -1,6 +1,6 @@
 package zhousai;
 
-import leetcode.node.ListNode;
+import struct.ListNode;
 
 import java.util.*;
 

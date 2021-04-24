@@ -1,7 +1,7 @@
 package leetcode;
 
-import leetcode.math.Bit;
-import leetcode.math.Geometry;
+import math.Bit;
+import math.Geometry;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

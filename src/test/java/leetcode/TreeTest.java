@@ -1,9 +1,9 @@
 package leetcode;
 
-import leetcode.node.ListNode;
-import leetcode.node.NextNode;
-import leetcode.node.TreeNode;
-import leetcode.tree.Binary;
+import struct.ListNode;
+import struct.NextNode;
+import struct.TreeNode;
+import tree.Binary;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

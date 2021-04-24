@@ -1,6 +1,6 @@
 package leetcode;
 
-import leetcode.dp.DPMinCostTickets;
+import dp.DPMinCostTickets;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +25,8 @@ class LeetTest {
     assertEquals(leet.lengthOfLongestSubstring(s), 3);
     assertEquals(leet.lengthOfLongestSubstring("abcdefghi"), 9);
 
-    DoublePointer doublePointer = new DoublePointer();
-    int result = doublePointer.lengthOfLongestSubstring(s);
+    TwoPointer TwoPointer = new TwoPointer();
+    int result = TwoPointer.lengthOfLongestSubstring(s);
     assertEquals(3, result);
   }
 
@@ -70,34 +70,34 @@ class LeetTest {
 
   @Test
   void minWindow() {
-    DoublePointer doublePointer = new DoublePointer();
+    TwoPointer TwoPointer = new TwoPointer();
     String s = "ADOBECODEBANC";
     String t = "ABC";
-    String result = doublePointer.minWindow(s, t);
+    String result = TwoPointer.minWindow(s, t);
     assertEquals("BANC", result);
     s = "a";
     t = "a";
-    result = doublePointer.minWindow(s, t);
+    result = TwoPointer.minWindow(s, t);
     assertEquals("a", result);
   }
 
   @Test
   void testCheckInclusion() {
-    DoublePointer doublePointer = new DoublePointer();
+    TwoPointer TwoPointer = new TwoPointer();
     String s = "ADOBECODEBANC";
     String t = "DOC";
-    assertTrue(doublePointer.checkInclusion(s, t));
+    assertTrue(TwoPointer.checkInclusion(s, t));
     s = "abcdeabcdx";
     t = "abcdxabcde";
-    assertTrue(doublePointer.checkInclusion(s, t));
+    assertTrue(TwoPointer.checkInclusion(s, t));
   }
 
   @Test
   void testFindAnagrams() {
-    DoublePointer doublePointer = new DoublePointer();
+    TwoPointer TwoPointer = new TwoPointer();
     String s = "cbaebabacd";
     String t = "abc";
-    List<Integer> result = doublePointer.findAnagrams(s, t);
+    List<Integer> result = TwoPointer.findAnagrams(s, t);
     System.out.println(result);
     assertEquals(0, result.get(0));
     assertEquals(6, result.get(1));

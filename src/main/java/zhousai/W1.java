@@ -1,7 +1,5 @@
 package zhousai;
 
-import leetcode.graph.Graph;
-
 import java.util.*;
 
 /** 2020/8/30 */
@@ -74,7 +72,9 @@ public class W1 {
     TarjanGeDian tarjanGeDian = new TarjanGeDian(n * m);
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) {
-        if (grid[i][j] == 0) continue;
+        if (grid[i][j] == 0) {
+          continue;
+        }
         for (int k = 0; k < 4; k++) {
           int x = i + dx[k];
           int y = j + dy[k];

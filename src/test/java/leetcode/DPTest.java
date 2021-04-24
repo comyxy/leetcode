@@ -1,5 +1,6 @@
 package leetcode;
 
+import dp.*;
 import leetcode.dp.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
