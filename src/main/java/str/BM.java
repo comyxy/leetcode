@@ -1,4 +1,4 @@
-package dp.strStr;
+package str;
 
 import java.util.Arrays;
 
@@ -19,7 +19,6 @@ public class BM {
     Arrays.fill(right, -1);
     for (int j = 0; j < M; j++) {
       right[pat.charAt(j)] = j;
-      //            System.out.println(pat.charAt(j) + ":" + j);
     }
   }
 

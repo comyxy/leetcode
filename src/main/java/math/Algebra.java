@@ -8,11 +8,10 @@ package math;
 public class Algebra {
 
     /**
-     * LeetCode172
+     * 172
      * 给定一个整数 n，返回 n! 结果尾数中零的数量
      * 2 和 5 的因子
      * @param n 整数
-     * @return
      */
     public int trailingZeroes(int n) {
         int count = 0;
@@ -24,11 +23,7 @@ public class Algebra {
     }
 
     /**
-     * LeetCode16.11 跳水板
-     * @param shorter
-     * @param longer
-     * @param k
-     * @return
+     *16.11 跳水板
      */
     public int[] divingBoard(int shorter, int longer, int k) {
         if(k == 0){
@@ -47,9 +42,7 @@ public class Algebra {
 
     /**
      * 数学极值方法
-     * LeetCode343
-     * @param n
-     * @return
+     * Code343
      */
     public int integerBreak3(int n) {
         if (n == 2) {
@@ -71,7 +64,6 @@ public class Algebra {
     /**
      * 罗马数字到整数
      * @param s 罗马字符
-     * @return
      */
     public int romanToInt(String s) {
         assert s != null && s.length() != 0;
@@ -118,5 +110,24 @@ public class Algebra {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 633
+     */
+    public boolean judgeSquareSum(int c) {
+        int hi = (int)(Math.sqrt(c));
+        int lo = 0;
+        while(lo <= hi) {
+            int t = lo * lo + hi * hi;
+            if(t > c) {
+                hi -= 1;
+            }else if(t < c) {
+                lo += 1;
+            }else {
+                return true;
+            }
+        }
+        return false;
     }
 }

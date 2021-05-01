@@ -1,17 +1,30 @@
-package dp.strStr;
+package str;
 
 /**
  * Rabin-Karp 算法4
  *
  * 2020/7/3
+ * @author comyxy
  */
 public class RK {
   private final String pat;
   private final long patHash;
   private final int M;
-  private final long Q; // 很大的随机质数
-  private final int R = 256; // 字母表大小 进制
-  private long RM; // R^(M-1)%Q
+
+  /**
+   * 很大的随机质数
+   */
+  private final long Q;
+
+  /**
+   * 字母表大小 进制
+   */
+  private final int R = 256;
+
+  /**
+   * R^(M-1)%Q
+   */
+  private long RM;
 
   public RK(String pat) {
     this.pat = pat;
@@ -31,7 +44,8 @@ public class RK {
       return 0;
     }
     for (int i = M; i < N; i++) {
-      textHash = (textHash + Q - (text.charAt(i - M) * RM) % Q) % Q; // + Q 避免负数
+      // + Q 避免负数
+      textHash = (textHash + Q - (text.charAt(i - M) * RM) % Q) % Q;
       textHash = (textHash * R + text.charAt(i)) % Q;
       if (patHash == textHash) {
         if (check(i - M + 1)) {
@@ -53,7 +67,6 @@ public class RK {
   }
 
   private long longRandomPrime() {
-    //        return BigInteger.probablePrime(100, new Random()).longValue();
     return 997;
   }
 

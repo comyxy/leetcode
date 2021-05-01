@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 /**
  * 2020/6/15
+ * @author comyxy
  */
 public class Search {
     /**
@@ -91,11 +92,9 @@ public class Search {
 
 
     /**
-     * LeetCode329
+     * Code329
      * 查找矩阵中的最长递增路径
      *
-     * @param matrix
-     * @return
      */
     public int longestIncreasingPath(int[][] matrix) {
         final int m = matrix.length;
@@ -146,8 +145,6 @@ public class Search {
 
     /**
      * LeetCode130
-     *
-     * @param board
      */
     public void solve(char[][] board) {
         m = board.length;
@@ -192,5 +189,33 @@ public class Search {
         solveDfs(board, x - 1, y);
         solveDfs(board, x, y + 1);
         solveDfs(board, x, y - 1);
+    }
+
+    /**
+     * 1011
+     */
+    public int shipWithinDays(int[] weights, int D) {
+        int lo = Arrays.stream(weights).max().getAsInt(), hi = Arrays.stream(weights).sum();
+        while(lo < hi) {
+            int mid = (lo + hi) / 2;
+            if(canLoad(weights, D, mid)) {
+                hi = mid;
+            }else {
+                lo = mid + 1;
+            }
+        }
+        return lo;
+    }
+
+    private boolean canLoad(int[] weights, int d, int load) {
+        int day = 1, cur = 0;
+        for (int good : weights) {
+            if(cur + good > load) {
+                day += 1;
+                cur = 0;
+            }
+            cur += good;
+        }
+        return day <= d;
     }
 }
