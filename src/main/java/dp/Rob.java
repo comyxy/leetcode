@@ -44,14 +44,37 @@ public class Rob {
     }
 
     private int[] rob3_1dfs(TreeNode node) {
-        if(node == null){
+        if (node == null) {
             return new int[]{0, 0};
         }
         // [f,g]
         int[] left = rob3_1dfs(node.left);
         int[] right = rob3_1dfs(node.right);
         int select = node.val + left[1] + right[1];
-        int not_select = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
-        return new int[]{select, not_select};
+        int notSelect = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        return new int[]{select, notSelect};
+    }
+
+    private static final int LIMIT = 10001;
+
+    /**
+     * 740
+     */
+    public int deleteAndEarn(int[] nums) {
+        int[] values = new int[LIMIT];
+        for (int num : nums) {
+            values[num] += num;
+        }
+        int[] dp = new int[LIMIT];
+        for (int i = 0; i < LIMIT; i++) {
+            if(i == 0) {
+                continue;
+            }else if(i == 1) {
+                dp[i] = values[i];
+                continue;
+            }
+            dp[i] = Math.max(dp[i-1], dp[i-2] + values[i]);
+        }
+        return dp[LIMIT-1];
     }
 }

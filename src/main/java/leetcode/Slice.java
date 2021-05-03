@@ -1,8 +1,7 @@
 package leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author comyxy
@@ -80,11 +79,56 @@ public class Slice {
         dp[0] = 1;
         for (int val = 1; val <= target; val++) {
             for (int num : nums) {
-                if(val >= num) {
-                    dp[val] += dp[val-num];
+                if (val >= num) {
+                    dp[val] += dp[val - num];
                 }
             }
         }
         return dp[target];
+    }
+
+    private static class Employee {
+        int id;
+        int importance;
+        List<Integer> subordinates;
+    }
+
+    /**
+     * 690
+     */
+    public int getImportance(List<Employee> employees, int id) {
+        Map<Integer, Employee> map = employees.stream().
+                collect(Collectors.toMap(employee -> employee.id, employee -> employee));
+        return getImportanceDfs(map, id);
+    }
+
+    private int getImportanceDfs(Map<Integer, Employee> map, int id) {
+        Employee employee = map.get(id);
+        int importance = employee.importance;
+        for (Integer subordinate : employee.subordinates) {
+            importance += getImportanceDfs(map, subordinate);
+        }
+        return importance;
+    }
+
+    /**
+     * 554
+     */
+    public int leastBricks(List<List<Integer>> wall) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (List<Integer> w : wall) {
+            int cur = 0;
+            for (int i = 0; i < w.size() - 1; i++) {
+                cur += w.get(i);
+                map.put(cur, map.getOrDefault(cur, 0) + 1);
+            }
+        }
+        // 最多穿过每一层
+        int res = wall.size();
+        for (Integer val : map.values()) {
+            int d = wall.size() - val;
+            res = Math.min(res, d);
+        }
+        return res;
     }
 }
