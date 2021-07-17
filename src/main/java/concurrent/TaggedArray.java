@@ -26,10 +26,11 @@ public class TaggedArray<T> {
         return new TaggedSpliterator<>(elements, 0, elements.length);
     }
 
+    @SuppressWarnings("unchecked")
     private static class TaggedSpliterator<T> implements Spliterator<T> {
         private final Object[] array;
         private int origin;
-        private int fence;
+        private final int fence;
 
         public TaggedSpliterator(Object[] array, int origin, int fence) {
             this.array = array;

@@ -1,5 +1,9 @@
 package sort;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.EasyUtils;
+
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -8,41 +12,23 @@ import java.util.concurrent.RecursiveAction;
 
 /**
  * 2020/9/13
+ *
  * @author comyxy
  */
-@SuppressWarnings("DuplicatedCode")
 public class Sort {
-    private static final int MOD = 1000000007;
 
-    public static int[] getRandomArray(int len, int max) {
-        int[] arr = new int[len];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = (int) (Math.random() * max);
-        }
-        return arr;
-    }
+    private static final Logger log = LoggerFactory.getLogger(Sort.class);
 
-    private static void swapInt(int[] arr, int i, int j) {
-        int t = arr[j];
-        arr[j] = arr[i];
-        arr[i] = t;
-    }
-
-    public static boolean checkUpIntSequence(int[] arr) {
-        for(int i=0;i< arr.length-1;i++) {
-            if (arr[i+1] < arr[i]) {
-                return false;
-            }
-        }
-        return true;
+    public static void quickSort(int[] arr) {
+        quickSort(arr, 0, arr.length - 1);
     }
 
     /**
      * 快排 增序
      *
-     * @param arr   数组
+     * @param arr 数组
      * @param lo  左边界
-     * @param hi 右边界
+     * @param hi  右边界
      */
     public static void quickSort(int[] arr, int lo, int hi) {
         if (lo >= hi) {
@@ -51,10 +37,6 @@ public class Sort {
         int j = partition(arr, lo, hi);
         quickSort(arr, lo, j - 1);
         quickSort(arr, j + 1, hi);
-    }
-
-    public static void quickSort(int[] arr) {
-        quickSort(arr, 0, arr.length-1);
     }
 
     private static int partition(int[] arr, int lo, int hi) {
@@ -76,44 +58,155 @@ public class Sort {
             if (i >= j) {
                 break;
             }
-            swapInt(arr, i, j);
+            EasyUtils.swapInt(arr, i, j);
         }
-        swapInt(arr, lo, j);
+        EasyUtils.swapInt(arr, lo, j);
         return j;
     }
 
     public static void mergeSort(int[] arr, int lo, int hi) {
-        if(lo >= hi) {
+        if (lo >= hi) {
             return;
         }
         int mid = (lo + hi) >>> 1;
         mergeSort(arr, lo, mid);
-        mergeSort(arr, mid+1, hi);
+        mergeSort(arr, mid + 1, hi);
         merge(arr, lo, mid, hi);
     }
 
     public static void mergeSort(int[] arr) {
-        mergeSort(arr, 0, arr.length-1);
+        mergeSort(arr, 0, arr.length - 1);
     }
 
     private static void merge(int[] arr, int lo, int mid, int hi) {
-        int[] buf = Arrays.copyOfRange(arr, lo, hi+1);
-        int i = lo, j = mid+1, k = 0;
-        while(i <= mid && j <= hi) {
-            if(arr[i] <= arr[j]) {
+        int[] buf = Arrays.copyOfRange(arr, lo, hi + 1);
+        int i = lo, j = mid + 1, k = 0;
+        while (i <= mid && j <= hi) {
+            if (arr[i] <= arr[j]) {
                 buf[k++] = arr[i++];
-            }else {
+            } else {
                 buf[k++] = arr[j++];
             }
         }
-        while(i <= mid) {
+        while (i <= mid) {
             buf[k++] = arr[i++];
         }
-        while(j <= hi) {
+        while (j <= hi) {
             buf[k++] = arr[j++];
         }
-        System.arraycopy(buf, 0, arr, lo, hi-lo+1);
+        System.arraycopy(buf, 0, arr, lo, hi - lo + 1);
     }
+
+    // 用排序解决其他问题
+
+    /**
+     * 计算逆序对 归并排序
+     */
+    public static int inversePairsCount(int[] arr) {
+        class Inverse {
+            int inversePair = 0;
+
+            void mergeSort(int[] arr, int lo, int hi) {
+                if (lo >= hi) {
+                    return;
+                }
+                int mid = (lo + hi) >>> 1;
+                mergeSort(arr, lo, mid);
+                mergeSort(arr, mid + 1, hi);
+                merge(arr, lo, mid, hi);
+            }
+
+            void merge(int[] arr, int lo, int mid, int hi) {
+                int[] buf = Arrays.copyOfRange(arr, lo, hi + 1);
+                int i = lo, j = mid + 1, k = 0;
+                while (i <= mid && j <= hi) {
+                    if (arr[i] <= arr[j]) {
+                        buf[k++] = arr[i++];
+                    } else {
+                        buf[k++] = arr[j++];
+                        inversePair += mid - i + 1;
+                        inversePair %= EasyUtils.MOD;
+                    }
+                }
+                while (i <= mid) {
+                    buf[k++] = arr[i++];
+                }
+                while (j <= hi) {
+                    buf[k++] = arr[j++];
+                }
+                System.arraycopy(buf, 0, arr, lo, hi - lo + 1);
+            }
+        }
+        Inverse in = new Inverse();
+        in.mergeSort(arr, 0, arr.length - 1);
+        return in.inversePair;
+    }
+
+    /**
+     * 计算在上下界范围里区间和的个数 归并排序
+     */
+    public static int countRangeSum(int[] arr, int lower, int upper) {
+        class RangeSum {
+            int mergeSort(int[] sum, int lo, int hi, int lower, int upper) {
+                if (hi <= lo) {
+                    return 0;
+                }
+                int mid = (lo + hi) >>> 1;
+                int lv = mergeSort(sum, lo, mid, lower, upper);
+                int rv = mergeSort(sum, mid + 1, hi, lower, upper);
+                int ret = lv + rv;
+
+                // 统计在范围内的区间和个数
+                // 区间[lo, mid] [mid+1, hi] 都已排序
+                int i = lo, l = mid + 1, r = mid + 1;
+                while (i <= mid) {
+                    while (l <= hi && sum[l] - sum[i] < lower) {
+                        l++;
+                    }
+                    while (r <= hi && sum[r] - sum[i] <= upper) {
+                        r++;
+                    }
+                    // [l, r)
+                    ret += r - l;
+                    i++;
+                }
+
+                // merge
+                merge(sum, lo, mid, hi);
+                return ret;
+            }
+
+            void merge(int[] sum, int lo, int mid, int hi) {
+                int[] buf = Arrays.copyOfRange(sum, lo, hi + 1);
+                int i = lo, j = mid + 1, k = 0;
+                while (i <= mid && j <= hi) {
+                    if (sum[i] <= sum[j]) {
+                        buf[k++] = sum[i++];
+                    } else {
+                        buf[k++] = sum[j++];
+                    }
+                }
+                while (i <= mid) {
+                    buf[k++] = sum[i++];
+                }
+                while (j <= hi) {
+                    buf[k++] = sum[j++];
+                }
+                System.arraycopy(buf, 0, sum, lo, hi - lo + 1);
+            }
+        }
+        RangeSum rs = new RangeSum();
+        // 前缀和
+        int s = 0;
+        int[] sum = new int[arr.length + 1];
+        for (int i = 0; i < arr.length; i++) {
+            s += arr[i];
+            sum[i + 1] = s;
+        }
+        return rs.mergeSort(sum, 0, sum.length - 1, lower, upper);
+    }
+
+    // 多线程排序任务
 
     static class SortTask extends RecursiveAction {
         final int[] arr;
@@ -126,14 +219,14 @@ public class Sort {
         }
 
         SortTask(int[] arr) {
-            this(arr, 0, arr.length-1);
+            this(arr, 0, arr.length - 1);
         }
 
         @Override
         protected void compute() {
-            if(hi - lo < THRESHOLD) {
+            if (hi - lo < THRESHOLD) {
                 sortSequentially(lo, hi);
-            }else {
+            } else {
                 int mid = (lo + hi) >>> 1;
                 invokeAll(new SortTask(arr, lo, mid),
                         new SortTask(arr, mid, hi));
@@ -142,127 +235,22 @@ public class Sort {
         }
 
         static final int THRESHOLD = 1000;
+
         private void sortSequentially(int lo, int hi) {
             Sort.quickSort(arr, lo, hi);
         }
+
         private void merge(int lo, int mid, int hi) {
             int[] buf = Arrays.copyOfRange(arr, lo, mid);
-            for(int i=0, j=lo, k=mid; i < buf.length; j++) {
+            for (int i = 0, j = lo, k = mid; i < buf.length; j++) {
                 arr[j] = (k == hi || buf[i] < arr[k]) ?
                         buf[i++] : arr[k++];
             }
         }
     }
 
-    // 用排序解决其他问题
-
-    /**
-     * 计算逆序对 归并排序
-     */
-    public static int inversePairsCount(int[] arr) {
-        class Inverse{
-            int inversePair = 0;
-            void mergeSort(int[] arr, int lo, int hi) {
-                if(lo >= hi) {
-                    return;
-                }
-                int mid = (lo + hi) >>> 1;
-                mergeSort(arr, lo, mid);
-                mergeSort(arr, mid+1, hi);
-                merge(arr, lo, mid, hi);
-            }
-            void merge(int[] arr, int lo, int mid, int hi) {
-                int[] buf = Arrays.copyOfRange(arr, lo, hi+1);
-                int i = lo, j = mid+1, k = 0;
-                while(i <= mid && j <= hi) {
-                    if(arr[i] <= arr[j]) {
-                        buf[k++] = arr[i++];
-                    }else {
-                        buf[k++] = arr[j++];
-                        inversePair += mid-i+1;
-                        inversePair %= MOD;
-                    }
-                }
-                while(i <= mid) {
-                    buf[k++] = arr[i++];
-                }
-                while(j <= hi) {
-                    buf[k++] = arr[j++];
-                }
-                System.arraycopy(buf, 0, arr, lo, hi-lo+1);
-            }
-        }
-        Inverse in = new Inverse();
-        in.mergeSort(arr, 0, arr.length-1);
-        return in.inversePair;
-    }
-
-    /**
-     * 计算在上下界范围里区间和的个数 归并排序
-     */
-    public static int countRangeSum(int[] arr, int lower, int upper) {
-        class RangeSum{
-            int mergeSort(int[] sum, int lo, int hi, int lower, int upper) {
-                if(hi <= lo) {
-                    return 0;
-                }
-                int mid = (lo+hi) >>> 1;
-                int lv = mergeSort(sum, lo, mid, lower, upper);
-                int rv = mergeSort(sum, mid+1, hi, lower, upper);
-                int ret = lv + rv;
-
-                // 统计在范围内的区间和个数
-                // 区间[lo, mid] [mid+1, hi] 都已排序
-                int i = lo, l = mid + 1, r = mid + 1;
-                while(i <= mid) {
-                    while(l <= hi && sum[l] - sum[i] < lower) {
-                        l++;
-                    }
-                    while(r <= hi && sum[r] - sum[i] <= upper) {
-                        r++;
-                    }
-                    // [l, r)
-                    ret += r - l;
-                    i++;
-                }
-
-                // merge
-                merge(sum, lo, mid, hi);
-                return ret;
-            }
-            void merge(int[] sum, int lo, int mid, int hi) {
-                int[] buf = Arrays.copyOfRange(sum, lo, hi+1);
-                int i = lo, j = mid+1, k = 0;
-                while(i <= mid && j <= hi) {
-                    if(sum[i] <= sum[j]) {
-                        buf[k++] = sum[i++];
-                    }else {
-                        buf[k++] = sum[j++];
-                    }
-                }
-                while(i <= mid) {
-                    buf[k++] = sum[i++];
-                }
-                while(j <= hi) {
-                    buf[k++] = sum[j++];
-                }
-                System.arraycopy(buf, 0, sum, lo, hi-lo+1);
-            }
-        }
-        RangeSum rs = new RangeSum();
-        // 前缀和
-        int s = 0;
-        int[] sum = new int[arr.length+1];
-        for(int i=0;i<arr.length;i++){
-            s += arr[i];
-            sum[i+1] = s;
-        }
-        return rs.mergeSort(sum, 0, sum.length-1, lower, upper);
-    }
-
     public static void main(String[] args) {
-        int[] origin = Sort.getRandomArray(1000000, 1000000);
-
+        int[] origin = EasyUtils.getRandomArray(1000000, 1000000);
         int[] nums1 = Arrays.copyOf(origin, origin.length);
         long start = System.currentTimeMillis();
         Sort.quickSort(nums1);
@@ -285,7 +273,7 @@ public class Sort {
         start = System.currentTimeMillis();
         mergeSort(nums3);
         System.out.println(System.currentTimeMillis() - start);
-        System.out.println(checkUpIntSequence(nums3));
+        System.out.println(EasyUtils.checkUpIntSequence(nums3));
 //        Arrays.stream(nums3).forEach(e -> System.out.print(e + " "));
 
         int[] nums4 = new int[]{9, 8, 7};

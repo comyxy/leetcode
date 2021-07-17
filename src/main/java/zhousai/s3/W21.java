@@ -109,6 +109,7 @@ public class W21 {
 
     private static final long MOD = 1000000007;
 
+    @SuppressWarnings("unchecked")
     public int waysToBuildRooms(int[] prevRoom) {
         final int n = prevRoom.length;
         factors = new long[2*n+1];

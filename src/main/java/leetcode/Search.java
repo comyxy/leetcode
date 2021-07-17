@@ -1,9 +1,10 @@
 package leetcode;
 
-import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
  * 2020/6/15
+ *
  * @author comyxy
  */
 public class Search {
@@ -33,6 +34,62 @@ public class Search {
     }
 
     /**
+     * 左边界的二分查找
+     *
+     * @param nums   升序数组
+     * @param target 查找值
+     * @return 如果待查找的值在数组中存在 则返回最左侧值的索引
+     * 如果不存在则返回<tt>(-(<i>insertion point</i>) - 1)</tt>
+     */
+    public int leftBinarySearch(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        // 如果left >= nums.length 表示没有查到而且target大于数组中所有值
+        // 如果nums[left] != target 表示没有查到而且在中间位置
+        if (left >= nums.length || nums[left] != target) {
+            return -left - 1;
+        }
+        return left;
+    }
+
+    /**
+     * 右边界的二分查找
+     *
+     * @param nums   升序数组
+     * @param target 查找值
+     * @return 如果待查找的值在数组中存在 则返回最右侧值的索引
+     * 如果不存在则返回<tt>(-(<i>insertion point</i>) - 1)</tt>
+     */
+    public int rightBinarySearch(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        // 如果right < 0 表示没有查到而且target小于数组中所有值
+        // 如果nums[right] != target 表示没有查到而且在中间位置
+        if (right < 0 || nums[right] != target) {
+            return -right - 1;
+        }
+        return right;
+    }
+
+    /**
      * 二分查找一个递增数组中目标的第一个位置与最后一个位置
      * 使用两次二分查找
      *
@@ -41,60 +98,50 @@ public class Search {
      * @return [第一个位置, 最后一个位置] 如果没有找到 [-1,-1]
      */
     public int[] searchRange(int[] nums, int target) {
-        int[] res = new int[2];
-        Arrays.fill(res, -1);
+        int left = leftBinarySearch(nums, target);
+        if (left < 0) {
+            return new int[]{-1, -1};
+        }
+        int right = rightBinarySearch(nums, target);
+        return new int[]{left, right};
+    }
 
-        int left = 0, right = nums.length - 1;
-        // [left, right]
-        // 查找最左边的
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                // [mid + 1, right]
-                left = mid + 1;
-            } else if (nums[mid] > target) {
-                // [left, mid - 1]
-                right = mid - 1;
-            } else if (nums[mid] == target) {
-                // [left, mid - 1]
-                right = mid - 1;
+    /**
+     * LeetCode1011
+     */
+    public int shipWithinDays(int[] weights, int D) {
+        int max = 0, sum = 0;
+        for (int weight : weights) {
+            max = Math.max(max, weight);
+            sum += weight;
+        }
+        Predicate<Integer> canLoad = (size) -> {
+            int day = 1, loaded = 0;
+            for (int weight : weights) {
+                if (loaded + weight > size) {
+                    day++;
+                    loaded = 0;
+                }
+                loaded += weight;
             }
-        }
-        if (left >= nums.length || nums[left] != target) {
-
-        } else {
-            res[0] = left;
-        }
-
-        // 查找最右边的
-        left = res[0] == -1 ? 0 : left;
-        right = nums.length - 1;
+            return day <= D;
+        };
+        int left = max, right = sum;
         while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                // [mid + 1, right]
-                left = mid + 1;
-            } else if (nums[mid] > target) {
+            int mid = (left + right) / 2;
+            if (canLoad.test(mid)) {
                 right = mid - 1;
-            } else if (nums[mid] == target) {
-                // [mid + 1, right]
+            } else {
                 left = mid + 1;
             }
         }
-        if (right < 0 || nums[right] != target) {
-
-        } else {
-            res[1] = right;
-        }
-
-        return res;
+        return left;
     }
 
 
     /**
      * Code329
      * 查找矩阵中的最长递增路径
-     *
      */
     public int longestIncreasingPath(int[][] matrix) {
         final int m = matrix.length;
@@ -114,6 +161,22 @@ public class Search {
 
     private int[][] cache;
 
+    enum Direction {
+        NORTH(0, 1),
+        SOUTH(0, -1),
+        EAST(1, 0),
+        WEST(-1, 0),
+        ;
+
+        int horizontal;
+        int vertical;
+
+        Direction(int i, int j) {
+            horizontal = i;
+            vertical = j;
+        }
+    }
+
     private int search(int[][] matrix, int i, int j) {
         if (cache[i][j] != 0) {
             return cache[i][j];
@@ -128,19 +191,6 @@ public class Search {
             }
         }
         return cache[i][j] = res + 1;
-    }
-
-
-    enum Direction {
-        NORTH(0, 1), SOUTH(0, -1), EAST(1, 0), WEST(-1, 0);
-
-        int horizontal;
-        int vertical;
-
-        Direction(int i, int j) {
-            horizontal = i;
-            vertical = j;
-        }
     }
 
     /**
@@ -166,9 +216,9 @@ public class Search {
         //
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if(board[i][j] == 'A'){
+                if (board[i][j] == 'A') {
                     board[i][j] = 'O';
-                }else if(board[i][j] == 'O'){
+                } else if (board[i][j] == 'O') {
                     board[i][j] = 'X';
                 }
             }
@@ -176,6 +226,7 @@ public class Search {
     }
 
     private int m;
+
     private int n;
 
     private void solveDfs(char[][] board, int x, int y) {
@@ -189,33 +240,5 @@ public class Search {
         solveDfs(board, x - 1, y);
         solveDfs(board, x, y + 1);
         solveDfs(board, x, y - 1);
-    }
-
-    /**
-     * 1011
-     */
-    public int shipWithinDays(int[] weights, int D) {
-        int lo = Arrays.stream(weights).max().getAsInt(), hi = Arrays.stream(weights).sum();
-        while(lo < hi) {
-            int mid = (lo + hi) / 2;
-            if(canLoad(weights, D, mid)) {
-                hi = mid;
-            }else {
-                lo = mid + 1;
-            }
-        }
-        return lo;
-    }
-
-    private boolean canLoad(int[] weights, int d, int load) {
-        int day = 1, cur = 0;
-        for (int good : weights) {
-            if(cur + good > load) {
-                day += 1;
-                cur = 0;
-            }
-            cur += good;
-        }
-        return day <= d;
     }
 }
