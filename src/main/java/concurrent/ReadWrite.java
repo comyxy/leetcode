@@ -23,6 +23,8 @@ public class ReadWrite implements Runnable{
 
     private int kind;
 
+    private Random random = new Random();
+
     public ReadWrite(int kind) {
         this.kind = kind;
     }
@@ -38,7 +40,7 @@ public class ReadWrite implements Runnable{
 
     private void writer() {
         while (true) {
-            int newVal = new Random().nextInt();
+            int newVal = random.nextInt();
             db.acquireUninterruptibly();
             val = newVal;
             System.out.println("writer\t" + val);

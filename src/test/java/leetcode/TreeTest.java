@@ -208,8 +208,5 @@ class TreeTest {
 
     TreeNode listToBST = binary.sortedListToBST(l1);
 
-    TreeNode listToBST2 = binary.sortedListToBST2(l1);
-
-    assertEquals(listToBST.val, listToBST2.val);
   }
 }

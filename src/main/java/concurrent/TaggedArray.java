@@ -1,5 +1,6 @@
 package concurrent;
 
+import javax.annotation.Nullable;
 import java.util.Spliterator;
 import java.util.concurrent.CountedCompleter;
 import java.util.function.Consumer;
@@ -89,7 +90,7 @@ public class TaggedArray<T> {
         final Consumer<T> action;
         final long batchSize;
 
-        public ParEach(ParEach<T> parent, Spliterator<T> spliterator, Consumer<T> action, long batchSize) {
+        public ParEach(@Nullable ParEach<T> parent, Spliterator<T> spliterator, Consumer<T> action, long batchSize) {
             super(parent);
             this.spliterator = spliterator;
             this.action = action;

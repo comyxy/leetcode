@@ -1,9 +1,6 @@
 package leetcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 双指针法
@@ -11,61 +8,130 @@ import java.util.Map;
  * @author comyxy
  */
 public class TwoPointer {
+
+    /**
+     * LeetCode3 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度 双指针法
+     * https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
+     * @param s 字符串
+     * @return 最长无重复字符子串长度
+     */
+    public int lengthOfLongestSubstring(String s) {
+        final int n = s.length();
+        Set<Character> set = new HashSet<>();
+        int l = 0, r = 0;
+        int res = 0;
+        // [l, r)
+        while(l < n) {
+            if(l != 0) {
+                // remove l-1
+                set.remove(s.charAt(l-1));
+            }
+            while(r < n && !set.contains(s.charAt(r))) {
+                set.add(s.charAt(r));
+                r++;
+            }
+            res = Math.max(res, r - l);
+            l++;
+        }
+        return res;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element/
+     * 滑动窗口
+     */
+    public int maxFrequency(int[] nums, int k) {
+        final int n = nums.length;
+        Arrays.sort(nums);
+        int total = 0;
+        int l = 0, res = 1;
+        for (int r = 1; r < n; r++) {
+            total += (nums[r] - nums[r - 1]) * (r - l);
+            while (total > k) {
+                total -= (nums[r] - nums[l]);
+                l++;
+            }
+            res = Math.max(res, r - l + 1);
+        }
+        return res;
+    }
+
+    /**
+     * LeetCode11 盛最多水的容器 双指针法 数学证明
+     * https://leetcode-cn.com/problems/container-with-most-water/solution/sheng-zui-duo-shui-de-rong-qi-by-leetcode-solution/
+     * @param height 高度数组
+     * @return 最大容量
+     */
+    public int maxArea(int[] height) {
+        int n = height.length;
+        int left = 0, right = n - 1, result = 0;
+        while (left < right) {
+            int area = Math.min(height[left], height[right]) * (right - left);
+            if (area > result) {
+                result = area;
+            }
+            if (height[right] > height[left]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return result;
+    }
+
     /**
      * 最小覆盖子串
-     *
+     * https://leetcode-cn.com/problems/minimum-window-substring/
      * @param s 长串
      * @param t 子串
-     * @return
      */
     public String minWindow(String s, String t) {
-        char[] cs = s.toCharArray();
-        char[] ct = t.toCharArray();
-        // window 记录寻找过程中子串中字符出现次数
-        Map<Character, Integer> window = new HashMap<>();
-        // need 记录子串t中字符出现次数
-        Map<Character, Integer> need = new HashMap<>();
-        for (Character c : ct) {
-            need.put(c, need.getOrDefault(c, 0) + 1);
-        }
-        // 双指针[left,right)
-        int left = 0, right = 0;
-        // s中最小覆盖子串起始位置start 长度len
-        int start = 0, len = Integer.MAX_VALUE;
-        // valid 记录符合条件的字符数
-        int valid = 0;
-        // right 滑动
-        while (right < cs.length) {
-            Character c = cs[right];
-            right++;
-            // 该字符c在t中
-            if (need.containsKey(c)) {
-                window.put(c, window.getOrDefault(c, 0) + 1);
-                if (window.get(c)
-                        .equals(need.get(c))) {
-                    valid++;
-                }
-            }
+        // 滑动窗口里的字符与对应出现次数
+        Map<Character, Integer> inSlideWindows = new HashMap<>();
 
-            // left 滑动
-            while (valid == need.size()) {
-                // 更新寻找位置
-                if (right - left < len) {
-                    start = left;
-                    len = right - left;
+        Map<Character, Integer> needToCover = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            addOne(needToCover, t.charAt(i));
+        }
+
+        final int n = s.length();
+        int l = 0, r = 0;
+        int validCharacter = 0;
+        int startIdx = 0, maxLen = Integer.MAX_VALUE;
+        while (r < n) {
+            char c = s.charAt(r);
+            if(needToCover.containsKey(c)) {
+                addOne(inSlideWindows, c);
+                if(inSlideWindows.get(c).equals(needToCover.get(c))) {
+                    validCharacter++;
                 }
-                Character d = cs[left];
-                left++;
-                if (need.containsKey(d)) {
-                    if (window.get(d)
-                            .equals(need.get(d))) {
-                        valid--;
+            }
+            r++;
+
+            while(validCharacter >= needToCover.size()) {
+                if(r - l < maxLen) {
+                    maxLen = r - l;
+                    startIdx = l;
+                }
+                char rc = s.charAt(l);
+                l++;
+                if(needToCover.containsKey(rc)) {
+                    if(inSlideWindows.get(rc).equals(needToCover.get(rc))) {
+                        validCharacter--;
                     }
-                    window.put(d, window.get(d) - 1);
+                    subtractOne(inSlideWindows, rc);
                 }
             }
         }
-        return len == Integer.MAX_VALUE ? "" : s.substring(start, start + len);
+        return maxLen != Integer.MAX_VALUE ? s.substring(startIdx, startIdx+maxLen) : "";
+    }
+
+    private void addOne(Map<Character, Integer> map, Character c) {
+        map.put(c, map.getOrDefault(c, 0) + 1);
+    }
+
+    private void subtractOne(Map<Character, Integer> map, Character c) {
+        map.put(c, map.getOrDefault(c, 0) - 1);
     }
 
     /**
@@ -76,46 +142,75 @@ public class TwoPointer {
      * @return t字符串的排列之一是不是s第二个字符串的子串
      */
     public boolean checkInclusion(String s, String t) {
-        char[] cs = s.toCharArray();
-        char[] ct = t.toCharArray();
         // window 记录寻找过程中子串中字符出现次数
         Map<Character, Integer> window = new HashMap<>();
+
         // need 记录子串t中字符出现次数
         Map<Character, Integer> need = new HashMap<>();
-        for (Character c : ct) {
-            need.put(c, need.getOrDefault(c, 0) + 1);
+        for (int i = 0; i < t.length(); i++) {
+            addOne(need, t.charAt(i));
         }
         // 双指针[left,right)
         int left = 0, right = 0;
         // valid 记录符合条件的字符数
         int valid = 0;
         // right 滑动
-        while (right < cs.length) {
-            Character c = cs[right];
-            right++;
-            // 该字符c在s1中
+        while (right < s.length()) {
+            Character c = s.charAt(right);
             if (need.containsKey(c)) {
-                window.put(c, window.getOrDefault(c, 0) + 1);
-                if (window.get(c)
-                        .equals(need.get(c))) {
+                addOne(window, c);
+                if (window.get(c).equals(need.get(c))) {
                     valid++;
                 }
             }
+            right++;
 
             while (right - left >= t.length()) {
-                // 字符串种类与数量都对得上
+                // 范围大于t的长度
                 if (valid == need.size()) {
+                    // 字符串种类与数量都对得上
                     return true;
                 }
-                Character d = cs[left];
+                Character d = s.charAt(left);
                 left++;
                 if (need.containsKey(d)) {
-                    if (window.get(d)
-                            .equals(need.get(d))) {
+                    if (window.get(d).equals(need.get(d))) {
                         valid--;
                     }
-                    window.put(d, window.get(d) - 1);
+                    subtractOne(window, d);
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 字符串的排列
+     *
+     * @param s 长字符串
+     * @param t 短字符串
+     * @return t字符串的排列之一是不是s第二个字符串的子串
+     */
+    public boolean checkInclusionV2(String s, String t) {
+        final int ns = s.length(), nt = t.length();
+        if(nt > ns) {
+            return false;
+        }
+        int[] cnt = new int[26];
+        for (int i = 0; i < nt; i++) {
+            cnt[t.charAt(i)-'a']--;
+        }
+        int l = 0, r = 0;
+        while(r < ns) {
+            char c = s.charAt(r);
+            r++;
+            cnt[c-'a']++;
+            while(cnt[c-'a'] > 0) {
+                cnt[s.charAt(l)-'a']--;
+                l++;
+            }
+            if(r-l == nt) {
+                return true;
             }
         }
         return false;
@@ -178,38 +273,5 @@ public class TwoPointer {
             }
         }
         return result;
-    }
-
-    /**
-     * 最长无重复子串
-     *
-     * @param s
-     * @return 最长无重复子串长度
-     */
-    public int lengthOfLongestSubstring(String s) {
-        char[] cs = s.toCharArray();
-        // window 记录寻找过程中子串中字符出现次数
-        Map<Character, Integer> window = new HashMap<>();
-        // 双指针[left,right)
-        int left = 0, right = 0;
-        // result
-        int result = 0;
-        // right 滑动
-        while (right < cs.length) {
-            Character c = cs[right];
-            right++;
-            // 该字符c在s1中
-            window.put(c, window.getOrDefault(c, 0) + 1);
-
-            // left 滑动
-            while (window.get(c) > 1) {
-                Character d = cs[left];
-                left++;
-                window.put(d, window.get(d) - 1);
-            }
-            result = Math.max(result, right - left);
-        }
-        return result;
-
     }
 }

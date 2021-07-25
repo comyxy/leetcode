@@ -8,15 +8,19 @@ import java.util.*;
  * @author comyxy
  */
 public class Graph {
-    private final int V;
+    private int V;
     private int E;
     private List<Integer>[] adj;
+
+    public Graph() {
+
+    }
 
 
     public Graph(int V) {
         this.V = V;
-        this.adj = (List<Integer>[])new ArrayList[V];
-        for(int v=0;v<V;v++){
+        this.adj = (List<Integer>[]) new ArrayList[V];
+        for (int v = 0; v < V; v++) {
             adj[v] = new ArrayList<>();
         }
     }
@@ -51,7 +55,7 @@ public class Graph {
         private void dfs(Graph G, int v) {
             marked[v] = true;
             count++;
-            for(int w : G.adj(v)) {
+            for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     dfs(G, w);
                 }
@@ -67,7 +71,7 @@ public class Graph {
         }
     }
 
-    public static class BreadthFirstSearch{
+    public static class BreadthFirstSearch {
         private boolean[] marked;
         private int count;
 
@@ -80,11 +84,11 @@ public class Graph {
             Deque<Integer> queue = new LinkedList<>();
             marked[s] = true;
             queue.offer(s);
-            while(!queue.isEmpty()) {
+            while (!queue.isEmpty()) {
                 count++;
                 int v = queue.remove();
-                for(int w : G.adj(v)) {
-                    if(!marked[w]) {
+                for (int w : G.adj(v)) {
+                    if (!marked[w]) {
                         marked[w] = true;
                         queue.offer(w);
                     }
@@ -96,7 +100,7 @@ public class Graph {
     /**
      * LeetCode207
      *
-     * @param numCourses 课程数
+     * @param numCourses    课程数
      * @param prerequisites 限制矩阵 [[0,1]] 代表 想要学习课程 0 需要先完成课程 1
      * @return 能否学完课程
      */
@@ -146,17 +150,23 @@ public class Graph {
         return true;
     }
 
-    /** 有向图的变 */
+    /**
+     * 有向图的变
+     */
     private List<List<Integer>> edges;
-    /** visited 0 尚未探索 1 正在探索 尚未回溯 2 已经探索 回溯完成 */
+    /**
+     * visited 0 尚未探索 1 正在探索 尚未回溯 2 已经探索 回溯完成
+     */
     private int[] visited;
-    /** 能否学完 */
+    /**
+     * 能否学完
+     */
     private boolean valid = true;
 
     /**
      * LeetCode207 dfs
      *
-     * @param numCourses 课程数
+     * @param numCourses    课程数
      * @param prerequisites 限制矩阵 [[0,1]] 代表 想要学习课程 0 需要先完成课程 1
      * @return 能否学完课程
      */
@@ -203,7 +213,7 @@ public class Graph {
     /**
      * LeetCode207 bfs
      *
-     * @param numCourses 课程数
+     * @param numCourses    课程数
      * @param prerequisites 限制矩阵 [[0,1]] 代表 想要学习课程 0 需要先完成课程 1
      * @return 能否学完课程
      */
@@ -240,38 +250,11 @@ public class Graph {
         return visited == numCourses;
     }
 
-    /**
-     * LeetCode133 克隆图
-     *
-     * @param node
-     * @return
-     */
-    public GraphNode cloneGraph(GraphNode node) {
-        if (node == null) {
-            return null;
-        }
-        // 已经被克隆过 返回克隆的节点
-        if (cloneGraphVisited.containsKey(node)) {
-            return cloneGraphVisited.get(node);
-        }
-
-        GraphNode cloneNode = new GraphNode(node.val, new ArrayList<>());
-        cloneGraphVisited.put(node, cloneNode);
-
-        for (GraphNode neighborNode : node.neighbors) {
-            // dfs 递归深度优先搜索
-            cloneNode.neighbors.add(cloneGraph(neighborNode));
-        }
-
-        return cloneNode;
-    }
-
-    private Map<GraphNode, GraphNode> cloneGraphVisited = new HashMap<>();
 
     /**
      * LeetCode1192 查找关键连接 无向图的桥
      *
-     * @param n 节点数目
+     * @param n           节点数目
      * @param connections 连接表
      * @return 桥
      */
@@ -439,6 +422,44 @@ public class Graph {
                 }
             }
         }
+    }
+
+    public int[] restoreArray(int[][] adjacentPairs) {
+        final int n = adjacentPairs.length + 1;
+        Map<Integer, List<Integer>> adjs = new HashMap<>();
+        for (int[] pair : adjacentPairs) {
+            int u = pair[0], v = pair[1];
+            List<Integer> u2v = adjs.getOrDefault(u, new ArrayList<>());
+            u2v.add(v);
+            adjs.put(u, u2v);
+            List<Integer> v2u = adjs.getOrDefault(v, new ArrayList<>());
+            v2u.add(u);
+            adjs.put(v, v2u);
+        }
+        int cur = 0;
+        for (Map.Entry<Integer, List<Integer>> entry : adjs.entrySet()) {
+            if(entry.getValue().size() == 1) {
+                cur = entry.getKey();
+                break;
+            }
+        }
+        Set<Integer> visited= new HashSet<>();
+        int[] res = new int[n];
+        res[0] = cur;
+        visited.add(cur);
+        for (int i = 1; i < n; i++) {
+            List<Integer> nexts = adjs.get(cur);
+            for (Integer next : nexts) {
+                if(visited.contains(next)) {
+                    continue;
+                }
+                cur = next;
+                res[i] = cur;
+                visited.add(cur);
+            }
+        }
+
+        return res;
     }
 
 }

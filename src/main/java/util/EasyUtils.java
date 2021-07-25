@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Random;
+
 /**
  * @date 2021/7/16 23:30
  */
@@ -12,8 +14,9 @@ public class EasyUtils {
 
     public static int[] getRandomArray(int len, int max) {
         int[] arr = new int[len];
+        Random random = new Random();
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = (int) (Math.random() * max);
+            arr[i] = random.nextInt(max);
         }
         return arr;
     }

@@ -515,50 +515,24 @@ public class Binary {
      * @return 树的头节点
      */
     public TreeNode sortedListToBST(ListNode head) {
-        // 左闭右开[left, right)
-        return sortedListToBSTHelper(head, null);
-    }
-
-    private TreeNode sortedListToBSTHelper(ListNode left, ListNode right) {
-        if (left == right) {
-            return null;
-        }
-        ListNode mid = getMedian(left, right);
-        TreeNode root = new TreeNode(mid.val);
-        root.left = sortedListToBSTHelper(left, mid);
-        root.right = sortedListToBSTHelper(mid.next, right);
-        return root;
-    }
-
-    private ListNode getMedian(ListNode left, ListNode right) {
-        ListNode slow = left;
-        ListNode fast = left;
-        while (fast != right && fast.next != right) {
-            fast = fast.next;
-            fast = fast.next;
-            slow = slow.next;
-        }
-        return slow;
-    }
-
-    public TreeNode sortedListToBST2(ListNode head) {
         // 左闭右闭[left, right]
-        gHead = head;
+        this.gHead = head;
         int length = getLength(head);
-        return sortedListToBSTHelper2(0, length - 1);
+        return sortedListToBSTHelper(0, length - 1);
     }
 
-    private TreeNode sortedListToBSTHelper2(int left, int right) {
+    private TreeNode sortedListToBSTHelper(int left, int right) {
         if (left > right) {
             return null;
         }
         int mid = (left + right + 1) / 2;
         // 先占位
         TreeNode root = new TreeNode();
-        root.left = sortedListToBSTHelper2(left, mid - 1);
-        root.val = gHead.val;
-        gHead = gHead.next;
-        root.right = sortedListToBSTHelper2(mid + 1, right);
+        root.left = sortedListToBSTHelper(left, mid - 1);
+        // 中序遍历
+        root.val = this.gHead.val;
+        this.gHead = gHead.next;
+        root.right = sortedListToBSTHelper(mid + 1, right);
         return root;
     }
 
@@ -610,5 +584,77 @@ public class Binary {
             return rangeSumBST(root.right, low, high);
         }
         return rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high) + root.val;
+    }
+
+    /**
+     * 先序遍历 迭代
+     */
+    public List<Integer> preOrder(TreeNode node) {
+        List<Integer> res = new ArrayList<>();
+        if(node == null) {
+            return res;
+        }
+        Deque<TreeNode> stack = new LinkedList<>();
+        while(node != null || !stack.isEmpty()) {
+            if(node != null) {
+                stack.push(node);
+                res.add(node.val);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                node = node.right;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 中序遍历 迭代
+     */
+    public List<Integer> inOrder(TreeNode node) {
+        List<Integer> res = new ArrayList<>();
+        if(node == null) {
+            return res;
+        }
+        Deque<TreeNode> stack = new LinkedList<>();
+        while(node != null || !stack.isEmpty()) {
+            if(node != null) {
+                stack.push(node);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                res.add(node.val);
+                node = node.right;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 后续遍历 迭代
+     */
+    public List<Integer> postOrder(TreeNode node) {
+        List<Integer> res = new ArrayList<>();
+        if(node == null) {
+            return res;
+        }
+        TreeNode pre = null;
+        Deque<TreeNode> stack = new LinkedList<>();
+        while(node != null || !stack.isEmpty()) {
+            while(node != null) {
+                stack.addLast(node);
+                node = node.left;
+            }
+            node = stack.peekLast();
+            if(node.right == null || node.right == pre) {
+                stack.removeLast();
+                res.add(node.val);
+                pre = node;
+                node = null;
+            }else {
+                node = node.right;
+            }
+        }
+        return res;
     }
 }

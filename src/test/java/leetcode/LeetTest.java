@@ -19,22 +19,6 @@ class LeetTest {
     leet = new Leet();
   }
 
-  @Test
-  public void testLengthOfLongestSubstring() {
-    String s = "pwwkew";
-    assertEquals(leet.lengthOfLongestSubstring(s), 3);
-    assertEquals(leet.lengthOfLongestSubstring("abcdefghi"), 9);
-
-    TwoPointer TwoPointer = new TwoPointer();
-    int result = TwoPointer.lengthOfLongestSubstring(s);
-    assertEquals(3, result);
-  }
-
-  @Test
-  public void testMaxArea() {
-    int[] height = {1, 8, 6, 2, 5, 4, 8, 3, 7};
-    assertEquals(leet.maxArea(height), 49);
-  }
 
   @Test
   public void testGenerateParenthesis() {
@@ -69,19 +53,6 @@ class LeetTest {
   }
 
   @Test
-  void minWindow() {
-    TwoPointer TwoPointer = new TwoPointer();
-    String s = "ADOBECODEBANC";
-    String t = "ABC";
-    String result = TwoPointer.minWindow(s, t);
-    assertEquals("BANC", result);
-    s = "a";
-    t = "a";
-    result = TwoPointer.minWindow(s, t);
-    assertEquals("a", result);
-  }
-
-  @Test
   void testCheckInclusion() {
     TwoPointer TwoPointer = new TwoPointer();
     String s = "ADOBECODEBANC";
@@ -113,12 +84,6 @@ class LeetTest {
     }
   }
 
-  @Test
-  void testTwoSum() {
-    int[] nums = {1, 3, 1, 2, 2, 3};
-    List<List<Integer>> lists = leet.twoSum2(nums, 0, 4);
-    System.out.println(lists);
-  }
 
   @Test
   void testFourSum() {
