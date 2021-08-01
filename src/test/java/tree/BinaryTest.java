@@ -3,6 +3,7 @@ package tree;
 import org.junit.jupiter.api.Test;
 import struct.TreeNode;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,5 +40,16 @@ class BinaryTest {
 
         List<Integer> post = binary.postOrder(n10);
         System.out.println(post);
+    }
+
+    @Test
+    void pathInZigZagTree() {
+        List<Integer> expected = Arrays.asList(1, 3, 4, 14);
+        List<Integer> actual = binary.pathInZigZagTree(14);
+        System.out.println(actual);
+        assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < actual.size(); i++) {
+            assertEquals(expected.get(i), actual.get(i));
+        }
     }
 }

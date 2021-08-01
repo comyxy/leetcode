@@ -5,6 +5,7 @@ import struct.NextNode;
 import struct.TreeNode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 二叉树
@@ -575,12 +576,12 @@ public class Binary {
      * 938
      */
     public int rangeSumBST(TreeNode root, int low, int high) {
-        if(root == null) {
+        if (root == null) {
             return 0;
         }
-        if(root.val > high) {
+        if (root.val > high) {
             return rangeSumBST(root.left, low, high);
-        }else if(root.val < low) {
+        } else if (root.val < low) {
             return rangeSumBST(root.right, low, high);
         }
         return rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high) + root.val;
@@ -591,19 +592,18 @@ public class Binary {
      */
     public List<Integer> preOrder(TreeNode node) {
         List<Integer> res = new ArrayList<>();
-        if(node == null) {
+        if (node == null) {
             return res;
         }
         Deque<TreeNode> stack = new LinkedList<>();
-        while(node != null || !stack.isEmpty()) {
-            if(node != null) {
+        while (node != null || !stack.isEmpty()) {
+            while (node != null) {
                 stack.push(node);
                 res.add(node.val);
                 node = node.left;
-            }else {
-                node = stack.pop();
-                node = node.right;
             }
+            node = stack.pop();
+            node = node.right;
         }
         return res;
     }
@@ -613,19 +613,18 @@ public class Binary {
      */
     public List<Integer> inOrder(TreeNode node) {
         List<Integer> res = new ArrayList<>();
-        if(node == null) {
+        if (node == null) {
             return res;
         }
         Deque<TreeNode> stack = new LinkedList<>();
-        while(node != null || !stack.isEmpty()) {
-            if(node != null) {
+        while (node != null || !stack.isEmpty()) {
+            while (node != null) {
                 stack.push(node);
                 node = node.left;
-            }else {
-                node = stack.pop();
-                res.add(node.val);
-                node = node.right;
             }
+            node = stack.pop();
+            res.add(node.val);
+            node = node.right;
         }
         return res;
     }
@@ -635,26 +634,187 @@ public class Binary {
      */
     public List<Integer> postOrder(TreeNode node) {
         List<Integer> res = new ArrayList<>();
-        if(node == null) {
+        if (node == null) {
             return res;
         }
         TreeNode pre = null;
         Deque<TreeNode> stack = new LinkedList<>();
-        while(node != null || !stack.isEmpty()) {
-            while(node != null) {
+        while (node != null || !stack.isEmpty()) {
+            while (node != null) {
                 stack.addLast(node);
                 node = node.left;
             }
             node = stack.peekLast();
-            if(node.right == null || node.right == pre) {
+            if (node.right == null || node.right == pre) {
                 stack.removeLast();
                 res.add(node.val);
                 pre = node;
                 node = null;
-            }else {
+            } else {
                 node = node.right;
             }
         }
         return res;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree/
+     */
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+        Map<TreeNode, TreeNode> parents = new HashMap<>();
+        setParent(root, parents);
+        List<Integer> res = new ArrayList<>();
+        findDistanceKNode(target, null, 0, k, parents, res);
+        return res;
+    }
+
+    private void findDistanceKNode(TreeNode node, TreeNode from, int depth, int k,
+                                   Map<TreeNode, TreeNode> parents, List<Integer> res) {
+        if (node == null) {
+            return;
+        }
+        if (depth == k) {
+            res.add(node.val);
+            return;
+        }
+
+        if (node.left != from) {
+            findDistanceKNode(node.left, node, depth + 1, k, parents, res);
+        }
+        if (node.right != from) {
+            findDistanceKNode(node.right, node, depth + 1, k, parents, res);
+        }
+        if (parents.get(node) != from) {
+            findDistanceKNode(parents.get(node), node, depth + 1, k, parents, res);
+        }
+    }
+
+    private void setParent(TreeNode root, Map<TreeNode, TreeNode> parents) {
+        if (root == null) {
+            return;
+        }
+        if (root.left != null) {
+            parents.put(root.left, root);
+            setParent(root.left, parents);
+        }
+        if (root.right != null) {
+            parents.put(root.right, root);
+            setParent(root.right, parents);
+        }
+    }
+
+    public List<Integer> distanceKV2(TreeNode root, TreeNode target, int k) {
+        Map<TreeNode, List<TreeNode>> adjs = new HashMap<>();
+        setAdjs(root, adjs);
+        Set<TreeNode> set = new HashSet<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(target);
+        set.add(target);
+        for (int i = 0; i < k; i++) {
+            int len = queue.size();
+            for (int j = 0; j < len; j++) {
+                TreeNode p = queue.poll();
+                if(!adjs.containsKey(p)) {
+                    continue;
+                }
+                for (TreeNode next : adjs.get(p)) {
+                    if (set.contains(next)) {
+                        continue;
+                    }
+                    queue.offer(next);
+                    set.add(next);
+                }
+            }
+        }
+        return queue.stream().map(node -> node.val).collect(Collectors.toList());
+    }
+
+    private void setAdjs(TreeNode root, Map<TreeNode, List<TreeNode>> adjs) {
+        if (root == null) {
+            return;
+        }
+        if (root.left != null) {
+            List<TreeNode> ln = adjs.computeIfAbsent(root.left, k -> new ArrayList<>());
+            ln.add(root);
+            List<TreeNode> on = adjs.computeIfAbsent(root, k -> new ArrayList<>());
+            on.add(root.left);
+            setAdjs(root.left, adjs);
+        }
+        if (root.right != null) {
+            List<TreeNode> rn = adjs.computeIfAbsent(root.right, k -> new ArrayList<>());
+            rn.add(root);
+            List<TreeNode> on = adjs.computeIfAbsent(root, k -> new ArrayList<>());
+            on.add(root.right);
+            setAdjs(root.right, adjs);
+        }
+    }
+
+    public List<Integer> pathInZigZagTree(int label) {
+        List<Integer> res = new ArrayList<>();
+        int row = 1, cur = 1;
+        while (cur * 2 <= label) {
+            row++;
+            cur *= 2;
+        }
+        if (row % 2 == 0) {
+            label = reverse(label, row);
+        }
+        while (row > 0) {
+            if (row % 2 == 0) {
+                res.add(reverse(label, row));
+            } else {
+                res.add(label);
+            }
+            row--;
+            label >>= 1;
+        }
+        Collections.reverse(res);
+        return res;
+    }
+
+    private int reverse(int label, int row) {
+        return (1 << (row - 1)) + (1 << row) - 1 - label;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/vertical-order-traversal-of-a-binary-tree/
+     */
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        List<int[]> nodes = new ArrayList<>();
+        preOrderDfs(root, 0, 0, nodes);
+        nodes.sort((o1, o2) -> {
+            // first col
+            if (o1[1] != o2[1]) {
+                return o1[1] - o2[1];
+            }
+            // then row
+            if (o1[0] != o2[0]) {
+                return o1[0] - o2[0];
+            }
+            // final value
+            return o1[2] - o2[2];
+        });
+        List<List<Integer>> res = new ArrayList<>();
+        int size = 0, preCol = Integer.MAX_VALUE;
+        for (int[] node : nodes) {
+            int row = node[0], col = node[1], val = node[2];
+            if (col != preCol) {
+                // new col
+                preCol = col;
+                res.add(new ArrayList<>());
+                size++;
+            }
+            res.get(size - 1).add(val);
+        }
+        return res;
+    }
+
+    private void preOrderDfs(TreeNode root, int row, int col, List<int[]> nodes) {
+        if (root == null) {
+            return;
+        }
+        nodes.add(new int[]{row, col, root.val});
+        preOrderDfs(root.left, row + 1, col - 1, nodes);
+        preOrderDfs(root.right, row + 1, col + 1, nodes);
     }
 }
