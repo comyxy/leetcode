@@ -51,4 +51,10 @@ class SliceTest {
         int[] arr = new int[]{4,7,6,2,3,8,6,1};
         assertEquals(3, slice.minOperations(target, arr));
     }
+
+    @Test
+    void findUnsortedSubarray() {
+        int[] nums = {2,6,4,8,10,9,15};
+        assertEquals(5, slice.findUnsortedSubarray(nums));
+    }
 }

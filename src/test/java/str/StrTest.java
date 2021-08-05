@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StrTest {
-    private final Str str = new Str();
+    private final StrStr str = new StrStr();
 
     @Test
     public void testStrStr() {
-        assertEquals(str.strStr("mississippi", "issi"), 1);
+        assertEquals(str.sunday("mississippi", "issi"), 1);
     }
 }

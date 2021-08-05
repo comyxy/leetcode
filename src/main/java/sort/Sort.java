@@ -2,13 +2,15 @@ package sort;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.EasyUtils;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
+
+import static utils.EasyUtil.*;
+
 
 /**
  * 2020/9/13
@@ -58,10 +60,14 @@ public class Sort {
             if (i >= j) {
                 break;
             }
-            EasyUtils.swapInt(arr, i, j);
+            swapInt(arr, i, j);
         }
-        EasyUtils.swapInt(arr, lo, j);
+        swapInt(arr, lo, j);
         return j;
+    }
+
+    public static void mergeSort(int[] arr) {
+        mergeSort(arr, 0, arr.length - 1);
     }
 
     public static void mergeSort(int[] arr, int lo, int hi) {
@@ -72,10 +78,6 @@ public class Sort {
         mergeSort(arr, lo, mid);
         mergeSort(arr, mid + 1, hi);
         merge(arr, lo, mid, hi);
-    }
-
-    public static void mergeSort(int[] arr) {
-        mergeSort(arr, 0, arr.length - 1);
     }
 
     private static void merge(int[] arr, int lo, int mid, int hi) {
@@ -125,7 +127,7 @@ public class Sort {
                     } else {
                         buf[k++] = arr[j++];
                         inversePair += mid - i + 1;
-                        inversePair %= EasyUtils.MOD;
+                        inversePair %= MOD;
                     }
                 }
                 while (i <= mid) {
@@ -250,7 +252,7 @@ public class Sort {
     }
 
     public static void main(String[] args) {
-        int[] origin = EasyUtils.getRandomArray(1000000, 1000000);
+        int[] origin = getRandomArray(1000000, 1000000);
         int[] nums1 = Arrays.copyOf(origin, origin.length);
         long start = System.currentTimeMillis();
         Sort.quickSort(nums1);
@@ -273,7 +275,7 @@ public class Sort {
         start = System.currentTimeMillis();
         mergeSort(nums3);
         System.out.println(System.currentTimeMillis() - start);
-        System.out.println(EasyUtils.checkUpIntSequence(nums3));
+        System.out.println(checkUpIntSequence(nums3));
 //        Arrays.stream(nums3).forEach(e -> System.out.print(e + " "));
 
         int[] nums4 = new int[]{9, 8, 7};

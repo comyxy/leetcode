@@ -1,6 +1,6 @@
 package zhousai.s1;
 
-import javafx.util.Pair;
+import struct.Pair;
 
 import java.util.*;
 

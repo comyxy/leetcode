@@ -1,12 +1,12 @@
-package util;
+package utils;
 
 import java.util.Random;
 
 /**
  * @date 2021/7/16 23:30
  */
-public class EasyUtils {
-    private EasyUtils() throws IllegalAccessException {
+public class EasyUtil {
+    private EasyUtil() throws IllegalAccessException {
         throw new IllegalAccessException("工具类不能实例化");
     }
 
@@ -30,6 +30,15 @@ public class EasyUtils {
     public static boolean checkUpIntSequence(int[] arr) {
         for(int i=0;i< arr.length-1;i++) {
             if (arr[i+1] < arr[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isSorted(int[] nums) {
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] < nums[i - 1]) {
                 return false;
             }
         }

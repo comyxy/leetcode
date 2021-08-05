@@ -462,4 +462,35 @@ public class Graph {
         return res;
     }
 
+
+    /**
+     * https://leetcode-cn.com/problems/find-eventual-safe-states
+     */
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        final int n = graph.length;
+        int[] colors = new int[n];
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (isSafe(i, colors, graph)) {
+                res.add(i);
+            }
+        }
+        return res;
+    }
+
+    private boolean isSafe(int u, int[] colors, int[][] graph) {
+        if (colors[u] > 0) {
+            return colors[u] == 2;
+        }
+        // 0 -> 1
+        colors[u] = 1;
+        for (int v : graph[u]) {
+            if (!isSafe(v, colors, graph)) {
+                return false;
+            }
+        }
+        // 1 -> 2
+        colors[u] = 2;
+        return true;
+    }
 }

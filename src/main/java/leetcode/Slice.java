@@ -2,7 +2,8 @@ package leetcode;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static utils.EasyUtil.*;
 
 /**
  * @author comyxy
@@ -301,9 +302,9 @@ public class Slice {
                     }
                 }
                 int pos = 0;
-                if(lo >= len) {
+                if (lo >= len) {
                     throw new IllegalStateException();
-                }else {
+                } else {
                     pos = lo;
                 }
                 d[pos] = nums[i];
@@ -323,28 +324,28 @@ public class Slice {
         }
         List<Integer> nA = new ArrayList<>();
         for (int i = 0; i < m; i++) {
-            if(value2idx.containsKey(arr[i])) {
+            if (value2idx.containsKey(arr[i])) {
                 nA.add(value2idx.get(arr[i]));
             }
         }
         //
         final int l = nA.size();
-        if(l == 0) {
+        if (l == 0) {
             return n;
         }
         int[] d = new int[l];
         d[0] = nA.get(0);
         int len = 1;
         for (int i = 1; i < l; i++) {
-            if(nA.get(i) > d[len - 1]) {
+            if (nA.get(i) > d[len - 1]) {
                 d[len++] = nA.get(i);
-            }else {
+            } else {
                 int lo = 0, hi = len - 1;
                 while (lo <= hi) {
                     int mid = (lo + hi) >>> 1;
-                    if(d[mid] >= nA.get(i)) {
+                    if (d[mid] >= nA.get(i)) {
                         hi = mid - 1;
-                    }else {
+                    } else {
                         lo = mid + 1;
                     }
                 }
@@ -354,4 +355,42 @@ public class Slice {
         return n - len;
     }
 
+    /**
+     * https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/
+     */
+    public int findUnsortedSubarray(int[] nums) {
+        if (isSorted(nums)) {
+            return 0;
+        }
+        int[] sorted = Arrays.copyOf(nums, nums.length);
+        Arrays.sort(sorted);
+        int left = 0;
+        while (nums[left] == sorted[left]) {
+            left++;
+        }
+        int right = nums.length - 1;
+        while (nums[right] == sorted[right]) {
+            right--;
+        }
+        return right - left + 1;
+    }
+
+    public int findUnsortedSubarrayV2(int[] nums) {
+        final int n = nums.length;
+        int minn = Integer.MAX_VALUE, left = -1;
+        int maxn = Integer.MIN_VALUE, right = -1;
+        for (int i = 0; i < n; i++) {
+            if (nums[n - i - 1] <= minn) {
+                minn = nums[n - i - 1];
+            } else {
+                left = n - i - 1;
+            }
+            if (nums[i] >= maxn) {
+                maxn = nums[i];
+            } else {
+                right = i;
+            }
+        }
+        return left == -1 ? 0 : right - left + 1;
+    }
 }

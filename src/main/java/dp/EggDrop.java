@@ -1,6 +1,6 @@
 package dp;
 
-import javafx.util.Pair;
+import struct.Pair;
 
 import java.util.HashMap;
 import java.util.Map;

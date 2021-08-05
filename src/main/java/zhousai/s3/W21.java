@@ -1,6 +1,6 @@
 package zhousai.s3;
 
-import javafx.util.Pair;
+import struct.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
