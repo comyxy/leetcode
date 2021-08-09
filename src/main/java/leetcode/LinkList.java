@@ -1,6 +1,7 @@
 package leetcode;
 
 import struct.ListNode;
+import struct.Pair;
 
 /**
  * 链表
@@ -123,5 +124,73 @@ public class LinkList {
             curr = curr.next;
         }
         System.out.println();
+    }
+
+    /**
+     * k个一组反转链表
+     */
+    public ListNode reverseK(ListNode head, int k) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode pre = dummy;
+        while (head != null) {
+            ListNode tail = pre;
+            for (int i = 0; i < k; i++) {
+                if (tail.next == null) {
+                    break;
+                }
+                tail = tail.next;
+            }
+            ListNode nextHead = tail.next;
+            // [head, tail]
+            ListNode[] reversed = doReverse(head, tail);
+            head = reversed[0];
+            tail = reversed[1];
+            //
+            pre.next = head;
+            tail.next = nextHead;
+            //
+            pre = tail;
+            head = tail.next;
+        }
+        return dummy.next;
+    }
+
+    /**
+     *
+     * @return new head and tail
+     */
+    private ListNode[] doReverse(ListNode head, ListNode tail) {
+        ListNode pre = tail.next;
+        ListNode cur = head;
+        while (pre != tail) {
+            ListNode t = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = t;
+        }
+        return new ListNode[]{tail, head};
+    }
+
+    /**
+     * 反转链表[left, right]范围内的链表
+     */
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+
+        ListNode pre = dummy;
+        for (int i = 1; i < left; i++) {
+            pre = pre.next;
+        }
+        head = pre.next;
+        for (int i = left; i < right; i++) {
+            ListNode t = head.next;
+            head.next = t.next;
+            t.next = pre.next;
+            pre.next = t;
+        }
+        return dummy.next;
     }
 }

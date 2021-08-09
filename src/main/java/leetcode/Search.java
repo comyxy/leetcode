@@ -39,7 +39,7 @@ public class Search {
      * @param nums   升序数组
      * @param target 查找值
      * @return 如果待查找的值在数组中存在 则返回最左侧值的索引
-     * 如果不存在则返回<tt>(-(<i>insertion point</i>) - 1)</tt>
+     * 如果不存在则返回-1
      */
     public int leftBinarySearch(int[] nums, int target) {
         int left = 0, right = nums.length - 1;
@@ -56,7 +56,7 @@ public class Search {
         // 如果left >= nums.length 表示没有查到而且target大于数组中所有值
         // 如果nums[left] != target 表示没有查到而且在中间位置
         if (left >= nums.length || nums[left] != target) {
-            return -left - 1;
+            return -1;
         }
         return left;
     }
@@ -67,7 +67,7 @@ public class Search {
      * @param nums   升序数组
      * @param target 查找值
      * @return 如果待查找的值在数组中存在 则返回最右侧值的索引
-     * 如果不存在则返回<tt>(-(<i>insertion point</i>) - 1)</tt>
+     * 如果不存在则返回-1
      */
     public int rightBinarySearch(int[] nums, int target) {
         int left = 0, right = nums.length - 1;
@@ -84,9 +84,41 @@ public class Search {
         // 如果right < 0 表示没有查到而且target小于数组中所有值
         // 如果nums[right] != target 表示没有查到而且在中间位置
         if (right < 0 || nums[right] != target) {
-            return -right - 1;
+            return -1;
         }
         return right;
+    }
+
+    /**
+     * 在升序数组中找到第一个大于target元素的索引
+     * [left, right)
+     */
+    public int upperBound(int[] nums, int left, int right, int target) {
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    /**
+     * 在升序数组中找到第一个大于或者等于target元素的索引
+     * [left, right)
+     */
+    public int lowerBound(int[] nums, int left, int right, int target) {
+        while (left < right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] >= target) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
     }
 
     /**

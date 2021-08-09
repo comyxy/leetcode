@@ -12,6 +12,8 @@ class LinkListTest {
 
     ListNode start;
 
+    LinkList linkList = new LinkList();
+
     @BeforeEach
     void setUp() {
         start = new ListNode(4);
@@ -27,9 +29,6 @@ class LinkListTest {
 
     @Test
     public void testSortList(){
-
-
-        LinkList linkList = new LinkList();
         ListNode result = linkList.sortList(start);
         ListNode curr = result;
         while(curr != null){
@@ -43,9 +42,14 @@ class LinkListTest {
 
     @Test
     void testReorderList() {
-        LinkList linkList = new LinkList();
         linkList.reorderList(start);
 
+    }
+
+    @Test
+    void reverseK() {
+        ListNode res = linkList.reverseK(start, 3);
+        printListNode(res);
     }
 
     private void printListNode(ListNode node){
