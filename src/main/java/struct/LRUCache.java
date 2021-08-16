@@ -1,4 +1,4 @@
-package leetcode;
+package struct;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class LRUCache {
     public LRUCache(int capacity) {
         this.capacity = capacity;
         this.size = 0;
-        this.cache = new HashMap<Integer, DoubleLinkedNode>(capacity + 1);
+        this.cache = new HashMap<>(capacity + 1);
         this.head = new DoubleLinkedNode();
         this.tail = new DoubleLinkedNode();
         this.head.next = this.tail;

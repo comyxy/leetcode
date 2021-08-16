@@ -49,7 +49,7 @@ public class W27 {
         while (i < j) {
             if (cs[i] == '[') {
                 left++;
-            } else if (cs[i] == ']'){
+            } else if (cs[i] == ']') {
                 if (left > 0) {
                     left--;
                 } else {
@@ -120,7 +120,7 @@ public class W27 {
 //        String s = "]]][[[";
 //        int count = w.minSwaps(s);
 //        System.out.println(count);
-        int[] obs = new int[]{5,1,5,5,1,3,4,5,1,4};
+        int[] obs = new int[]{5, 1, 5, 5, 1, 3, 4, 5, 1, 4};
         int[] results = w.longestObstacleCourseAtEachPosition(obs);
         for (int result : results) {
             System.out.println(result);

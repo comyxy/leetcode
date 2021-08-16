@@ -1,6 +1,7 @@
 package graph;
 
-import struct.GraphNode;
+
+import struct.UnionFind;
 
 import java.util.*;
 

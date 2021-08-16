@@ -68,7 +68,7 @@ public class W22 {
         for (int i = 1; i < m; i++) {
             tmp = lcs(tmp, paths[i]);
         }
-        if(tmp.size() == 0) {
+        if (tmp.size() == 0) {
             return 0;
         }
         return tmp.get(0).length;
@@ -77,7 +77,7 @@ public class W22 {
     private List<int[]> lcs(List<int[]> tmp, int[] path) {
         int maxLen = 0;
         List<int[]> rep = new ArrayList<>();
-        if(tmp.size() == 0) {
+        if (tmp.size() == 0) {
             return rep;
         }
         int m = tmp.get(0).length, n = path.length;

@@ -54,14 +54,14 @@ public class W20 {
                     }
                     for (int k = 0; k < 4; k++) {
                         int ni = ci + dirs[k][0], nj = cj + dirs[k][1];
-                        if(!good(ni, nj, m, n, visited, grid2)) {
+                        if (!good(ni, nj, m, n, visited, grid2)) {
                             continue;
                         }
                         visited[ni][nj] = true;
-                        queue.offer(new Pair<>(ni,nj));
+                        queue.offer(new Pair<>(ni, nj));
                     }
                 }
-                if(contains) {
+                if (contains) {
                     res++;
                 }
             }
@@ -70,10 +70,10 @@ public class W20 {
     }
 
     private boolean good(int x, int y, int m, int n, boolean[][] visited, int[][] grid) {
-        if(x < 0 || x >= m || y < 0 || y >= n) {
+        if (x < 0 || x >= m || y < 0 || y >= n) {
             return false;
         }
-        if(visited[x][y] || grid[x][y] != 1) {
+        if (visited[x][y] || grid[x][y] != 1) {
             return false;
         }
         return true;
@@ -82,28 +82,28 @@ public class W20 {
     public int[] minDifference(int[] nums, int[][] queries) {
         int q = queries.length, n = nums.length;
         int[] res = new int[q];
-        int[][] pre = new int[101][n+1];
+        int[][] pre = new int[101][n + 1];
         for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= 100 ; j++) {
-                pre[j][i] = pre[j][i-1];
+            for (int j = 1; j <= 100; j++) {
+                pre[j][i] = pre[j][i - 1];
             }
-            pre[nums[i-1]][i] += 1;
+            pre[nums[i - 1]][i] += 1;
         }
         List<Integer> tmp = new LinkedList<>();
         for (int k = 0; k < q; k++) {
             int[] query = queries[k];
             tmp.clear();
             for (int j = 1; j <= 100; j++) {
-                if(pre[j][query[1] + 1] - pre[j][query[0]] > 0) {
+                if (pre[j][query[1] + 1] - pre[j][query[0]] > 0) {
                     tmp.add(j);
                 }
             }
-            if(tmp.size() == 1) {
+            if (tmp.size() == 1) {
                 res[k] = -1;
-            }else {
+            } else {
                 res[k] = Integer.MAX_VALUE;
                 for (int i = 0; i < tmp.size() - 1; i++) {
-                    res[k] = Math.min(res[k], tmp.get(i+1) - tmp.get(i));
+                    res[k] = Math.min(res[k], tmp.get(i + 1) - tmp.get(i));
                 }
             }
         }

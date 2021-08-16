@@ -20,7 +20,7 @@ public class W25 {
             }
             s1 = String.valueOf(tmp);
         }
-        return (int)Long.parseLong(s1);
+        return (int) Long.parseLong(s1);
     }
 
     public String maximumNumber(String num, int[] change) {
@@ -28,10 +28,10 @@ public class W25 {
         boolean start = false;
         for (int i = 0; i < cs.length; i++) {
             int v = cs[i] - '0';
-            if(change[v] > v) {
-                cs[i] = (char)(change[v] + '0');
+            if (change[v] > v) {
+                cs[i] = (char) (change[v] + '0');
                 start = true;
-            } else if(change[v] < v && start) {
+            } else if (change[v] < v && start) {
                 break;
             }
         }
@@ -53,25 +53,25 @@ public class W25 {
         // 最终状态 [1,1,1...1]
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < (1 << m); j++) {
-                if(popCount(j) != i + 1) {
+                if (popCount(j) != i + 1) {
                     continue;
                 }
                 for (int k = 0; k < m; k++) {
-                    if((j & (1 << k)) > 0) {
+                    if ((j & (1 << k)) > 0) {
                         // to j by 1 << k
-                        dp[i][j] = Math.max(dp[i][j], (i != 0 ? dp[i-1][j ^ (1 << k)] : 0) + matrix[i][k]);
+                        dp[i][j] = Math.max(dp[i][j], (i != 0 ? dp[i - 1][j ^ (1 << k)] : 0) + matrix[i][k]);
                     }
                 }
             }
         }
-        return dp[m-1][(1 << m) - 1];
+        return dp[m - 1][(1 << m) - 1];
     }
 
     private int popCount(int x) {
         int count = 0;
-        while(x > 0) {
+        while (x > 0) {
             count++;
-            x &= (x-1);
+            x &= (x - 1);
         }
         return count;
     }
@@ -112,7 +112,7 @@ public class W25 {
     }
 
     private void permuteHelper(List<List<Integer>> result, int[] nums, int start) {
-        if(start >= nums.length) {
+        if (start >= nums.length) {
             // copy
             List<Integer> tmp = new ArrayList<>();
             for (int num : nums) {
@@ -122,12 +122,12 @@ public class W25 {
         }
         for (int i = start; i < nums.length; i++) {
             swapInt(nums, i, start);
-            permuteHelper(result, nums, start+1);
+            permuteHelper(result, nums, start + 1);
             swapInt(nums, i, start);
         }
     }
 
-    private void swapInt(int[] nums, int i, int j){
+    private void swapInt(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;

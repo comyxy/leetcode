@@ -13,7 +13,7 @@ public class W21 {
     public int maxProductDifference(int[] nums) {
         final int n = nums.length;
         Arrays.sort(nums);
-        return nums[n-1] * nums[n-2] - nums[0] * nums[1];
+        return nums[n - 1] * nums[n - 2] - nums[0] * nums[1];
     }
 
     public int[][] rotateGrid(int[][] grid, int k) {
@@ -28,7 +28,7 @@ public class W21 {
     }
 
     private void rotateCircle(int[][] grid, int x, int y, int k, int q) {
-        int len = 2*x + 2*y - 4;
+        int len = 2 * x + 2 * y - 4;
         k = k % len;
         for (int i = 0; i < k; i++) {
             rotateOnce(grid, x, y, q);
@@ -38,23 +38,23 @@ public class W21 {
     private void rotateOnce(int[][] grid, int x, int y, int q) {
         int tmp = grid[q][q];
         int di = 0, dj = 0;
-        while(dj < y - 1) {
-            grid[q+di][q+dj] = grid[q+di][q+dj+1];
+        while (dj < y - 1) {
+            grid[q + di][q + dj] = grid[q + di][q + dj + 1];
             dj++;
         }
-        while(di < x - 1) {
-            grid[q+di][q+dj] = grid[q+di+1][q+dj];
+        while (di < x - 1) {
+            grid[q + di][q + dj] = grid[q + di + 1][q + dj];
             di++;
         }
-        while(dj > 0) {
-            grid[q+di][q+dj] = grid[q+di][q+dj-1];
+        while (dj > 0) {
+            grid[q + di][q + dj] = grid[q + di][q + dj - 1];
             dj--;
         }
-        while(di > 1) {
-            grid[q+di][q+dj] = grid[q+di-1][q+dj];
+        while (di > 1) {
+            grid[q + di][q + dj] = grid[q + di - 1][q + dj];
             di--;
         }
-        grid[q+di][q+dj] = tmp;
+        grid[q + di][q + dj] = tmp;
     }
 
     /**
@@ -66,16 +66,16 @@ public class W21 {
         for (int i = 0; i < n; i++) {
             int[] tmp = new int[10];
             int chance = 2;
-            for (int j = i + 1; j <= n ; j++) {
+            for (int j = i + 1; j <= n; j++) {
                 int idx = word.charAt(j - 1) - 'a';
                 tmp[idx]++;
-                if(tmp[idx] % 2 == 1) {
+                if (tmp[idx] % 2 == 1) {
                     chance--;
-                }else {
+                } else {
                     chance++;
                 }
 
-                if(chance > 0) {
+                if (chance > 0) {
                     res++;
                 }
             }
@@ -83,7 +83,7 @@ public class W21 {
         return res;
     }
 
-    public long wonderfulSubstrings2(String word){
+    public long wonderfulSubstrings2(String word) {
         final int n = word.length();
         int[] counts = new int[1024];
         // 空串+1
@@ -112,10 +112,10 @@ public class W21 {
     @SuppressWarnings("unchecked")
     public int waysToBuildRooms(int[] prevRoom) {
         final int n = prevRoom.length;
-        factors = new long[2*n+1];
+        factors = new long[2 * n + 1];
         factors[0] = factors[1] = 1;
-        for (int i = 2; i <= 2*n; i++) {
-            factors[i] = factors[i-1] * i % MOD;
+        for (int i = 2; i <= 2 * n; i++) {
+            factors[i] = factors[i - 1] * i % MOD;
         }
         List<Integer>[] la = new ArrayList[n];
         for (int i = 0; i < n; i++) {
@@ -125,11 +125,11 @@ public class W21 {
             la[prevRoom[i]].add(i);
         }
         Pair<Long, Long> ret = dfs(la, 0);
-        return (int)(long)ret.getKey();
+        return (int) (long) ret.getKey();
     }
 
     private Pair<Long, Long> dfs(List<Integer>[] la, int node) {
-        if(la[node].size() == 0) {
+        if (la[node].size() == 0) {
             return new Pair<Long, Long>(1L, 1L);
         }
         long ways = 0, counts = 0;
@@ -140,7 +140,7 @@ public class W21 {
                 ways = subWays;
                 counts = subCounts;
             } else {
-                ways = (ways * subWays % MOD) * C((int) (counts + subCounts), (int)(long) subCounts) % MOD;
+                ways = (ways * subWays % MOD) * C((int) (counts + subCounts), (int) (long) subCounts) % MOD;
                 counts += subCounts;
             }
         }
@@ -150,20 +150,21 @@ public class W21 {
     private long[] factors;
 
     private long C(int n, int k) {
-        return (factors[n] * inv(factors[n-k], MOD)) % MOD
+        return (factors[n] * inv(factors[n - k], MOD)) % MOD
                 * inv(factors[k], MOD) % MOD;
     }
 
     /**
      * 快速幂
-     * @param x 底数
-     * @param p 指数
+     *
+     * @param x   底数
+     * @param p   指数
      * @param mod 求余
      */
     public static long qPower(long x, long p, long mod) {
         long res = 1;
-        while(p > 0) {
-            if((p & 1) == 1) {
+        while (p > 0) {
+            if ((p & 1) == 1) {
                 res = res * x % mod;
             }
             p >>= 1;
@@ -175,10 +176,11 @@ public class W21 {
     /**
      * 逆元
      * 费马小定理 a^(p-1) = 1 (mod p)
+     *
      * @param mod 为素数
      */
     public static long inv(long x, long mod) {
-        return qPower(x, mod-2, mod);
+        return qPower(x, mod - 2, mod);
     }
 
 }

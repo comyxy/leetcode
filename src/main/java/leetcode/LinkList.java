@@ -1,7 +1,6 @@
 package leetcode;
 
 import struct.ListNode;
-import struct.Pair;
 
 /**
  * 链表

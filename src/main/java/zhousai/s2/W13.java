@@ -96,7 +96,7 @@ public class W13 {
         }
         return result;
     }
-    
+
     public static void main(String[] args) {
         W13 w = new W13();
     }

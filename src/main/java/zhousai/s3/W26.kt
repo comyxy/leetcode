@@ -56,12 +56,20 @@ class W26 {
     }
 
     fun countSpecialSubsequences(nums: IntArray): Int {
-        var zero = 0L; var one = 0L; var two = 0L
+        var zero = 0L;
+        var one = 0L;
+        var two = 0L
         for (num in nums) {
             when (num) {
-                0 -> {zero += zero + 1; zero %= MOD}
-                1 -> {one += one + zero; one %= MOD}
-                2 -> {two += two + one; two %= MOD}
+                0 -> {
+                    zero += zero + 1; zero %= MOD
+                }
+                1 -> {
+                    one += one + zero; one %= MOD
+                }
+                2 -> {
+                    two += two + one; two %= MOD
+                }
             }
         }
         return two.toInt()
