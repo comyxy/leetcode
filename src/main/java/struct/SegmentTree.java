@@ -45,6 +45,7 @@ public class SegmentTree {
         int mid = (left + right) >> 1;
         buildSegmentTree(left, mid, idx << 1);
         buildSegmentTree(mid + 1, right, (idx << 1) + 1);
+        // 从底向上递归构建线段树
         pushUp(idx);
     }
 
@@ -93,7 +94,7 @@ public class SegmentTree {
     private void batchAdd(int l, int r, int v, int left, int right, int idx) {
         if (l <= left && right <= r) {
             // [left, right]完全在[l, r]中
-            sums[idx] += v * (r - l + 1);
+            sums[idx] += v * (right - left + 1);
             // 懒惰标记
             adds[idx] += v;
             return;
