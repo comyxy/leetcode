@@ -273,4 +273,37 @@ public class Search {
         solveDfs(board, x, y + 1);
         solveDfs(board, x, y - 1);
     }
+
+    /**
+     * https://leetcode-cn.com/problems/smallest-good-base/solution/zui-xiao-hao-jin-zhi-er-fen-shu-xue-fang-frrv/
+     */
+    public String smallestGoodBase(String n) {
+        long num = Long.parseLong(n);
+        for (int i = 63; i >= 2; i--) {
+            // i位数
+            // 计算进制数 k^0 + k^1 + ... + k^(mid) == num
+            long lo = 2, hi = num - 1;
+            while (lo <= hi) {
+                long mid = (hi - lo) / 2 + lo;
+                long sum = 0, maxVal = num / mid + 1;
+                for (int j = 0; j < i; j++) {
+                    if (sum < maxVal) {
+                        sum = sum * mid + 1;
+                    } else {
+                        // overflow
+                        sum = num + 1;
+                        break;
+                    }
+                }
+                if (sum == num) {
+                    return String.valueOf(mid);
+                } else if (sum > num) {
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+        }
+        return "";
+    }
 }

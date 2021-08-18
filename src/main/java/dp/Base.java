@@ -677,7 +677,7 @@ public class Base {
         for (int i = 1; i <= maxMove; i++) {
             for (int j = 0; j < m; j++) {
                 for (int k = 0; k < n; k++) {
-                    int count = dp[i-1][j][k];
+                    int count = dp[i - 1][j][k];
                     if (count == 0) {
                         continue;
                     }
@@ -690,6 +690,40 @@ public class Base {
                         }
                     }
                 }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/student-attendance-record-ii/
+     */
+    public int checkRecord(int n) {
+        // (长度 缺席A次数 迟到L次数) --> 出现次数
+        int[][][] dp = new int[n + 1][2][3];
+        dp[0][0][0] = 1;
+        for (int i = 1; i <= n; i++) {
+            // 到达P结尾 dp(i,0,0) dp(i,1,0)
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 3; k++) {
+                    dp[i][j][0] = (dp[i][j][0] + dp[i-1][j][k]) % MOD;
+                }
+            }
+            // 缺席A结尾 dp(i,1,0)
+            for (int k = 0; k < 3; k++) {
+                dp[i][1][0] = (dp[i][1][0] + dp[i-1][0][k]) % MOD;
+            }
+            // 迟到L结尾 dp(i,0,1) dp(i,0,2) dp(i,1,1) dp(i,1,2)
+            for (int j = 0; j < 2; j++) {
+                for (int k = 1; k < 3; k++) {
+                    dp[i][j][k] = (dp[i][j][k] + dp[i-1][j][k-1]) % MOD;
+                }
+            }
+        }
+        int res = 0;
+        for (int j = 0; j < 2; j++) {
+            for (int k = 0; k < 3; k++) {
+                res = (res + dp[n][j][k]) % MOD;
             }
         }
         return res;

@@ -284,30 +284,26 @@ public class Slice {
         if (n == 0) {
             return 0;
         }
+        // 严格单调递增序列
         int[] d = new int[n];
         d[0] = nums[0];
         int len = 1;
         for (int i = 1; i < n; i++) {
-            if (nums[i] > d[len - 1]) {
-                d[len++] = nums[i];
+            int target = nums[i];
+            if (target > d[len - 1]) {
+                d[len++] = target;
             } else {
-                // 查找左边界的二分
+                // 查找左边界的二分 如果没有找到则返回插入点
                 int lo = 0, hi = len - 1;
                 while (lo <= hi) {
                     int mid = (lo + hi) >> 1;
-                    if (d[mid] >= nums[i]) {
+                    if (d[mid] >= target) {
                         hi = mid - 1;
                     } else {
                         lo = mid + 1;
                     }
                 }
-                int pos = 0;
-                if (lo >= len) {
-                    throw new IllegalStateException();
-                } else {
-                    pos = lo;
-                }
-                d[pos] = nums[i];
+                d[lo] = target;
             }
         }
         return len;
@@ -392,5 +388,64 @@ public class Slice {
             }
         }
         return left == -1 ? 0 : right - left + 1;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/132-pattern/solution/132mo-shi-by-leetcode-solution-ye89/
+     */
+    public boolean find132pattern(int[] nums) {
+        final int n = nums.length;
+        if (n < 3) {
+            return false;
+        }
+        int one = nums[0];
+        TreeMap<Integer, Integer> two = new TreeMap<>();
+        for (int i = 2; i < n; i++) {
+            two.put(nums[i], two.getOrDefault(nums[i], 0) + 1);
+        }
+        for (int three = 1; three < n - 1; three++) {
+            int val = nums[three];
+            // 判断
+            if (one < val) {
+                Integer firstBigger = two.ceilingKey(one + 1);
+                if (firstBigger != null && firstBigger < val) {
+                    return true;
+                }
+            }
+            // 递推
+            one = Math.min(one, val);
+            int t = nums[three + 1];
+            two.put(t, two.get(t) - 1);
+            if (two.get(t) == 0) {
+                two.remove(t);
+            }
+        }
+        return false;
+    }
+
+    public boolean find132patternV2(int[] nums) {
+        final int n = nums.length;
+        if (n < 3) {
+            return false;
+        }
+        // 单调递减栈
+        Deque<Integer> st = new LinkedList<>();
+        st.push(nums[n - 1]);
+        int two = Integer.MIN_VALUE;
+
+        for (int i = n - 2; i >= 0; i--) {
+            int val = nums[i];
+            // 检查
+            if (val < two) {
+                return true;
+            }
+            // 递推
+            while (!st.isEmpty() && val > st.peek()) {
+                // 小于val的最大值
+                two = st.pop();
+            }
+            st.push(val);
+        }
+        return false;
     }
 }
