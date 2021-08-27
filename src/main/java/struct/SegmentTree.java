@@ -5,15 +5,11 @@ package struct;
  * 线段树 索引从1开始
  */
 public class SegmentTree {
-    /**
-     * 和
-     */
-    private final int[] sums;
 
     /**
-     * 加法懒惰标志
+     * 节点
      */
-    private final int[] adds;
+    private final Node[] tr;
 
     /**
      * 原始数组右移1位
@@ -23,147 +19,152 @@ public class SegmentTree {
     public SegmentTree(int[] nums) {
         final int n = nums.length;
         // 4 * n
-        this.sums = new int[n << 2];
-        this.adds = new int[n << 2];
+        this.tr = new Node[n << 2];
+        for (int i = 0; i < (n << 2); i++) {
+            tr[i] = new Node();
+        }
         this.nums = new int[n + 1];
         System.arraycopy(nums, 0, this.nums, 1, n);
-        buildSegmentTree(1, n, 1);
+        buildSegmentTree(1, 1, n);
     }
 
     /**
-     * 构建线段树 [left, right] 当前节点区间
+     * 构建线段树 [l, r] 当前节点区间
      *
-     * @param left  左侧 闭区间
-     * @param right 右侧 闭区间
-     * @param idx   线段树节点编号 从1开始
+     * @param u 线段树节点编号 从1开始
+     * @param l 左侧 闭区间
+     * @param r 右侧 闭区间
      */
-    private void buildSegmentTree(int left, int right, int idx) {
-        if (left == right) {
-            sums[idx] = nums[left];
+    private void buildSegmentTree(int u, int l, int r) {
+        tr[u].left = l;
+        tr[u].right = r;
+        if (l == r) {
+            tr[u].sum = nums[l];
             return;
         }
-        int mid = (left + right) >> 1;
-        buildSegmentTree(left, mid, idx << 1);
-        buildSegmentTree(mid + 1, right, (idx << 1) + 1);
+        int mid = (l + r) >> 1;
+        buildSegmentTree(u << 1, l, mid);
+        buildSegmentTree((u << 1) + 1, mid + 1, r);
         // 从底向上递归构建线段树
-        pushUp(idx);
+        pushUp(u);
     }
 
     public void add(int k, int v) {
-        add(k, v, 1, nums.length - 1, 1);
+        add(1, k, v);
     }
 
     /**
      * 单点增加
      *
-     * @param k     nums[k] 原始数组索引
-     * @param v     增加值
-     * @param left  线段树当前节点区间 左侧 闭区间
-     * @param right 线段树当前节点区间 右侧 闭区间
-     * @param idx   线段树节点编号 从1开始
+     * @param u 线段树节点编号 从1开始
+     * @param k nums[k] 原始数组索引
+     * @param v 增加值
      */
-    private void add(int k, int v, int left, int right, int idx) {
-        if (left == right) {
-            sums[idx] += v;
+    private void add(int u, int k, int v) {
+        if (tr[u].left == tr[u].right) {
+            tr[u].sum += v;
             return;
         }
-        int mid = (left + right) >> 1;
+        int mid = (tr[u].left + tr[u].right) >> 1;
         if (k <= mid) {
-            add(k, v, left, mid, idx << 1);
+            add(u << 1, k, v);
         } else {
-            add(k, v, mid + 1, right, (idx << 1) + 1);
+            add((u << 1) + 1, k, v);
         }
         // 左右子节点更新 父节点也更新
-        pushUp(idx);
+        pushUp(u);
     }
 
     public void batchAdd(int l, int r, int v) {
-        batchAdd(l, r, v, 1, nums.length - 1, 1);
+        batchAdd(1, l, r, v);
     }
 
     /**
      * 区间增加 [l, r]
      *
-     * @param l     操作区间左侧 闭区间
-     * @param r     操作区间右侧 闭区间
-     * @param v     增加值
-     * @param left  线段树当前节点区间 左侧 闭区间
-     * @param right 线段树当前节点区间 右侧 闭区间
-     * @param idx   线段树节点编号 从1开始
+     * @param u 线段树节点编号 从1开始
+     * @param l 操作区间左侧 闭区间
+     * @param r 操作区间右侧 闭区间
+     * @param v 增加值
      */
-    private void batchAdd(int l, int r, int v, int left, int right, int idx) {
-        if (l <= left && right <= r) {
+    private void batchAdd(int u, int l, int r, int v) {
+        if (l <= tr[u].left && tr[u].right <= r) {
             // [left, right]完全在[l, r]中
-            sums[idx] += v * (right - left + 1);
+            tr[u].sum += v * (tr[u].right - tr[u].left + 1);
             // 懒惰标记
-            adds[idx] += v;
+            tr[u].add += v;
             return;
         }
-        int mid = (left + right) >> 1;
-        pushDown(idx, mid - left + 1, right - mid);
+        int mid = (tr[u].left + tr[u].right) >> 1;
+        pushDown(u, mid - tr[u].left + 1, tr[u].right - mid);
         if (l <= mid) {
             // 线段树左子节点区间[left, mid]与操作区间有交集
-            batchAdd(l, r, v, left, mid, idx << 1);
+            batchAdd(u << 1, l, r, v);
         }
         if (r > mid) {
-            batchAdd(l, r, v, mid + 1, right, (idx << 1) + 1);
+            batchAdd((u << 1) + 1, l, r, v);
         }
-        pushUp(idx);
+        pushUp(u);
     }
 
     /**
      * 下移标记
      *
-     * @param idx 线段树节点编号 从1开始
-     * @param ln  线段树左子节点区间长度
-     * @param rn  线段树右子节点区间长度
+     * @param u  线段树节点编号 从1开始
+     * @param ln 线段树左子节点区间长度
+     * @param rn 线段树右子节点区间长度
      */
-    private void pushDown(int idx, int ln, int rn) {
-        if (adds[idx] != 0) {
+    private void pushDown(int u, int ln, int rn) {
+        if (tr[u].add != 0) {
             // 下推懒惰标记
-            adds[idx << 1] += adds[idx];
-            adds[(idx << 1) + 1] += adds[idx];
+            tr[u << 1].add += tr[u].add;
+            tr[(u << 1) + 1].add += tr[u].add;
             // 修改子节点的值
-            sums[idx << 1] += ln * adds[idx];
-            sums[(idx << 1) + 1] = rn * adds[idx];
+            tr[u << 1].sum += ln * tr[u].add;
+            tr[(u << 1) + 1].sum = rn * tr[u].add;
             // 清除该节点懒惰标记
-            adds[idx] = 0;
+            tr[u].add = 0;
         }
     }
 
-    private void pushUp(int idx) {
-        sums[idx] = sums[idx << 1] + sums[(idx << 1) + 1];
+    private void pushUp(int u) {
+        tr[u].sum = tr[u << 1].sum + tr[(u << 1) + 1].sum;
     }
 
     public int query(int l, int r) {
-        return query(l, r, 1, nums.length - 1, 1);
+        return query(1, l, r);
     }
 
     /**
      * 区间查询
      *
-     * @param l     操作区间左侧 闭区间
-     * @param r     操作区间右侧 闭区间
-     * @param left  线段树当前节点区间 左侧 闭区间
-     * @param right 线段树当前节点区间 右侧 闭区间
-     * @param idx   线段树节点编号 从1开始
+     * @param u 线段树节点编号 从1开始
+     * @param l 操作区间左侧 闭区间
+     * @param r 操作区间右侧 闭区间
      * @return 区间和
      */
-    private int query(int l, int r, int left, int right, int idx) {
-        if (l <= left && right <= r) {
+    private int query(int u, int l, int r) {
+        if (l <= tr[u].left && tr[u].right <= r) {
             // 操作区间完全包括在线段树当前节点区间内
-            return sums[idx];
+            return tr[u].sum;
         }
-        int mid = (left + right) >> 1;
-        pushDown(idx, mid - left + 1, right - mid);
+        int mid = (tr[u].left + tr[u].right) >> 1;
+        pushDown(u, mid - tr[u].left + 1, tr[u].right - mid);
 
         int res = 0;
         if (l <= mid) {
-            res += query(l, r, left, mid, idx << 1);
+            res += query(u << 1, l, r);
         }
         if (r > mid) {
-            res += query(l, r, mid + 1, right, (idx << 1) + 1);
+            res += query((u << 1) + 1, l, r);
         }
         return res;
+    }
+
+    static class Node {
+        int left;
+        int right;
+        int sum;
+        int add;
     }
 }

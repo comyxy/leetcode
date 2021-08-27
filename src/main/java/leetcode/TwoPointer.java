@@ -18,20 +18,17 @@ public class TwoPointer {
     public int lengthOfLongestSubstring(String s) {
         final int n = s.length();
         Set<Character> set = new HashSet<>();
-        int l = 0, r = 0;
+        int left = 0, right = 0;
         int res = 0;
-        // [l, r)
-        while(l < n) {
-            if(l != 0) {
-                // remove l-1
-                set.remove(s.charAt(l-1));
+        while (left < n) {
+            // move right
+            while (right < n && !set.contains(s.charAt(right))) {
+                set.add(s.charAt(right));
+                right++;
             }
-            while(r < n && !set.contains(s.charAt(r))) {
-                set.add(s.charAt(r));
-                r++;
-            }
-            res = Math.max(res, r - l);
-            l++;
+            res = Math.max(res, right - left);
+            // move left
+            set.remove(s.charAt(left++));
         }
         return res;
     }
@@ -273,5 +270,29 @@ public class TwoPointer {
             }
         }
         return result;
+    }
+
+    public String reverseVowels(String s) {
+        Set<Character> set = new HashSet<>(Set.of('a', 'e', 'i', 'o', 'u'));
+        set.addAll(Set.of('A', 'E', 'I', 'O', 'U'));
+        char[] cs = s.toCharArray();
+        int i = 0, j = cs.length - 1;
+        while(i < j) {
+            while(i < j && !set.contains(cs[i])) {
+                i++;
+            }
+            while(i < j && !set.contains(cs[j])) {
+                j--;
+            }
+            if (i >= j) {
+                break;
+            }
+            char t = cs[i];
+            cs[i] = cs[j];
+            cs[j] = t;
+            i++;
+            j--;
+        }
+        return String.valueOf(cs);
     }
 }

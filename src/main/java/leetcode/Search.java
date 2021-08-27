@@ -1,5 +1,6 @@
 package leetcode;
 
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -305,5 +306,58 @@ public class Search {
             }
         }
         return "";
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/cheapest-flights-within-k-stops/
+     */
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        Map<Integer, Map<Integer, Integer>> adjs = new HashMap<>();
+        for (int[] flight : flights) {
+            int u = flight[0], v = flight[1], t = flight[2];
+            Map<Integer, Integer> v2t = adjs.computeIfAbsent(u, (i) -> new HashMap<>());
+            v2t.put(v, t);
+        }
+        Queue<int[]> queue = new LinkedList<>();
+        int[] costs = new int[n];
+        Arrays.fill(costs, Integer.MAX_VALUE);
+        costs[src] = 0;
+        queue.offer(new int[]{src/*u*/, 0/*cost*/, k/*k*/});
+        while (!queue.isEmpty()) {
+            int[] p = queue.poll();
+            int u = p[0], pc = p[1], pk = p[2];
+            if (pk < 0) {
+                continue;
+            }
+            Map<Integer, Integer> vts = adjs.getOrDefault(u, new HashMap<>());
+            for (Map.Entry<Integer, Integer> vt : vts.entrySet()) {
+                int v = vt.getKey(), t = vt.getValue();
+                if (pc + t < costs[v]) {
+                    costs[v] = pc + t;
+                    queue.offer(new int[]{v, pc + t, pk - 1});
+                }
+            }
+        }
+        return costs[dst] != Integer.MAX_VALUE ? costs[dst] : -1;
+    }
+
+    public int findCheapestPriceV2(int n, int[][] flights, int src, int dst, int k) {
+        final int inf = 10000 * 101 + 1;
+        int[][] dp = new int[k + 2][n];
+        for (int i = 0; i < k + 2; i++) {
+            Arrays.fill(dp[i], inf);
+        }
+        dp[0][src] = 0;
+        for (int i = 1; i <= k + 1; i++) {
+            for (int[] flight : flights) {
+                int u = flight[0], v = flight[1], t = flight[2];
+                dp[i][v] = Math.min(dp[i][v], dp[i - 1][u] + t);
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int i = 1; i <= k + 1; i++) {
+            res = Math.min(res, dp[i][dst]);
+        }
+        return res == inf ? -1 : res;
     }
 }

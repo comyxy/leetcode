@@ -3,6 +3,8 @@ package backtrace;
 import org.junit.jupiter.api.Test;
 import struct.TreeNode;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -10,10 +12,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RecursionTest {
 
-    private final Recursion recursion = new Recursion();
+    Recursion recursion = new Recursion();
+
+    public static void printTree(TreeNode node) {
+        if (node == null) {
+            return;
+        }
+        System.out.print(node.val + " ");
+        printTree(node.left);
+        printTree(node.right);
+    }
 
     @Test
-    void testClone() {
+    void testCloneTree() {
         TreeNode n1 = new TreeNode(1);
         TreeNode n2 = new TreeNode(2);
         TreeNode n3 = new TreeNode(3);
@@ -25,6 +36,28 @@ class RecursionTest {
         n2.right = n5;
         TreeNode clone = recursion.cloneTree(n1);
         assertNotEquals(clone, n1);
-        Recursion.printTree(clone);
+        printTree(clone);
+    }
+
+    @Test
+    void testSubsets() {
+        List<List<Integer>> result = recursion.subsets(new int[]{1, 2, 3});
+        System.out.println(result);
+        assertEquals(16, result.size());
+    }
+
+    @Test
+    void generateParenthesis() {
+        List<String> result = recursion.generateParenthesis(3);
+        System.out.println(result);
+        assertEquals(5, result.size());
+    }
+
+    @Test
+    void allPathsSourceTarget() {
+        int[][] graph = {{4, 3, 1}, {3, 2, 4}, {3}, {4}, {}};
+        List<List<Integer>> result = recursion.allPathsSourceTarget(graph);
+        System.out.println(result);
+        assertEquals(5, result.size());
     }
 }

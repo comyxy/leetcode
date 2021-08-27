@@ -706,17 +706,17 @@ public class Base {
             // 到达P结尾 dp(i,0,0) dp(i,1,0)
             for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 3; k++) {
-                    dp[i][j][0] = (dp[i][j][0] + dp[i-1][j][k]) % MOD;
+                    dp[i][j][0] = (dp[i][j][0] + dp[i - 1][j][k]) % MOD;
                 }
             }
             // 缺席A结尾 dp(i,1,0)
             for (int k = 0; k < 3; k++) {
-                dp[i][1][0] = (dp[i][1][0] + dp[i-1][0][k]) % MOD;
+                dp[i][1][0] = (dp[i][1][0] + dp[i - 1][0][k]) % MOD;
             }
             // 迟到L结尾 dp(i,0,1) dp(i,0,2) dp(i,1,1) dp(i,1,2)
             for (int j = 0; j < 2; j++) {
                 for (int k = 1; k < 3; k++) {
-                    dp[i][j][k] = (dp[i][j][k] + dp[i-1][j][k-1]) % MOD;
+                    dp[i][j][k] = (dp[i][j][k] + dp[i - 1][j][k - 1]) % MOD;
                 }
             }
         }
@@ -727,5 +727,33 @@ public class Base {
             }
         }
         return res;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/interleaving-string/solution/jiao-cuo-zi-fu-chuan-by-leetcode-solution/
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        final int n1 = s1.length(), n2 = s2.length(), n3 = s3.length();
+        if (n1 + n2 != n3) {
+            return false;
+        }
+        // dp(i,j) s1前i个与s2前j个能否恰好组成s3的前i+j个
+        boolean[][] dp = new boolean[n1 + 1][n2 + 1];
+        for (int i = 0; i <= n1; i++) {
+            for (int j = 0; j <= n2; j++) {
+                int k = i + j;
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else {
+                    if (i > 0) {
+                        dp[i][j] = dp[i][j] || (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(k - 1));
+                    }
+                    if (j > 0) {
+                        dp[i][j] = dp[i][j] || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(k - 1));
+                    }
+                }
+            }
+        }
+        return dp[n1][n2];
     }
 }

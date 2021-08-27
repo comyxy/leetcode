@@ -60,9 +60,9 @@ public class Sort {
             if (i >= j) {
                 break;
             }
-            swapInt(arr, i, j);
+            swap(arr, i, j);
         }
-        swapInt(arr, lo, j);
+        swap(arr, lo, j);
         return j;
     }
 

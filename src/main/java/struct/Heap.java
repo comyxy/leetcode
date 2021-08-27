@@ -35,7 +35,7 @@ public class Heap {
     public int[] sort() {
         Heap h = new Heap(this.data);
         for (int i = h.size() - 1; i > 0; i--) {
-            swapInt(h.data(), 0, i);
+            swap(h.data(), 0, i);
             h.siftDown(0, h.data()[0], i);
         }
         return h.data();

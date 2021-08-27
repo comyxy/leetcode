@@ -65,4 +65,15 @@ class SearchTest {
         }
         return right;
     }
+
+    @Test
+    void findCheapestPrice() {
+        int n = 4;
+        int[][] edges = {{0,1,1}, {0,2,5}, {1,2,1}, {2,3,1}};
+        int src = 0;
+        int dst = 3;
+        int k = 1;
+        int cheapestPrice = search.findCheapestPrice(n, edges, src, dst, k);
+        assertEquals(6, cheapestPrice);
+    }
 }

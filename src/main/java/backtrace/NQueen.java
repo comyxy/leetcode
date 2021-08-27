@@ -9,7 +9,8 @@ import java.util.List;
  *
  * @date 2020/6/12
  */
-public class NQueue {
+public class NQueen {
+
     public List<List<String>> solveNQueens(int n) {
         List<List<String>> res = new ArrayList<>();
         char[][] boards = new char[n][n];

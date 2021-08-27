@@ -21,11 +21,6 @@ class LeetTest {
 
 
   @Test
-  public void testGenerateParenthesis() {
-    System.out.println(leet.generateParenthesis(3));
-  }
-
-  @Test
   public void testMincostTickets() {
     int[] days = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31};
     int[] costs = {2, 7, 15};

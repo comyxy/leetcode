@@ -21,7 +21,7 @@ public class EasyUtil {
         return arr;
     }
 
-    public static void swapInt(int[] arr, int i, int j) {
+    public static void swap(int[] arr, int i, int j) {
         int t = arr[j];
         arr[j] = arr[i];
         arr[i] = t;

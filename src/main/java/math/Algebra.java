@@ -1,7 +1,6 @@
 package math;
 
 
-import java.util.Objects;
 import java.util.PriorityQueue;
 
 /**
@@ -66,8 +65,8 @@ public class Algebra {
     }
 
     /**
-     * 罗马数字到整数
-     *
+     * 罗马数字到整数 如何处理IV类型
+     * 需要比较相邻2个字符 pre>=cur则加上pre pre<cur则需要减去pre
      * @param s 罗马字符
      */
     public int romanToInt(String s) {
