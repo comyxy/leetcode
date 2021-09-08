@@ -1,14 +1,36 @@
 package str;
 
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
+
+import static utils.EasyUtil.MOD;
 
 /**
  * @since 2021/8/20 21:10
  */
 public class Base {
+
+    /**
+     * 不同的子序列
+     * 给定一个字符串S 计算S的不同非空子序列的个数
+     */
+    public int distinctSubseqII(String s) {
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        // 空字符串
+        dp[0] = 1;
+        int[] lastIdxes = new int[26];
+        Arrays.fill(lastIdxes, -1);
+        for (int i = 1; i <= n; i++) {
+            int c = s.charAt(i - 1) - 'a';
+            dp[i] = (dp[i - 1] * 2) % MOD;
+            if (lastIdxes[c] >= 0) {
+                dp[i] = (dp[i] - dp[lastIdxes[c]] + MOD) % MOD;
+            }
+            lastIdxes[c] = i - 1;
+        }
+        return (dp[n] - 1) % MOD;
+    }
+
 
     /**
      * 字符串乘法

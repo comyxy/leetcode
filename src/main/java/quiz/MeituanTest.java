@@ -12,7 +12,47 @@ public class MeituanTest {
 //        q1();
 //        q2();
 //        q3();
-        q4();
+//        q4();
+        q5();
+//        q6();
+    }
+
+    private static void q5() {
+
+    }
+
+    private static void q6() {
+        Scanner in = new Scanner(System.in);
+        int n = Integer.parseInt(in.nextLine());
+        String str = in.nextLine();
+        String decoded = decode(str);
+        System.out.println(decoded);
+    }
+
+    private static String decode(String str) {
+        int n = str.length();
+        int start = 0, end = 0;
+        boolean bm = false;
+        for (int i = 0; i < n; i++) {
+            char c = str.charAt(i);
+            if (!bm && c == 'M') {
+                bm = true;
+            } else if (bm && c == 'T') {
+                start = i + 1;
+                break;
+            }
+        }
+        bm = false;
+        for (int i = n - 1; i >= start; i--) {
+            char c = str.charAt(i);
+            if (!bm && c == 'T') {
+                bm = true;
+            } else if (bm && c == 'M') {
+                end = i;
+                break;
+            }
+        }
+        return str.substring(start, end);
     }
 
     private static void q4() {
@@ -68,7 +108,7 @@ public class MeituanTest {
             tr[u].right = r;
             int mid = (l + r) >> 1;
             buildSegmentTree(u << 1, l, mid);
-            buildSegmentTree( (u << 1) + 1, mid + 1, r);
+            buildSegmentTree((u << 1) + 1, mid + 1, r);
         }
 
         void modify(int u, int l, int r, int idx) {

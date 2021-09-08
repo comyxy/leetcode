@@ -31,7 +31,7 @@ public class Tencent {
             char c = word.charAt(i);
 
             // 剩余字符能够构成k个字符 sb最后一个字符小于当前子符c
-            while (sb.length() > 0 && (sb.length() - 1 + (n - i)) >= k
+            while (sb.length() > 0 && (sb.length() + (n - i - 1)) >= k
                     && sb.charAt(sb.length() - 1) < c) {
                 sb.deleteCharAt(sb.length() - 1);
             }

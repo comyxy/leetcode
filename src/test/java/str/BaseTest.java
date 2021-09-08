@@ -23,4 +23,11 @@ class BaseTest {
         String result = str.multiply("999", "999");
         assertEquals("998001", result);
     }
+
+    @Test
+    void distinctSubseqII() {
+        String s = "zchmliaqdgvwncfatcfivphddpzjkgyygueikthqzyeeiebczqbqhdytkoawkehkbizdmcnilcjjlpoeoqqoqpswtqdpvszfaksn";
+        int result = str.distinctSubseqII(s);
+        assertEquals(97915677, result);
+    }
 }

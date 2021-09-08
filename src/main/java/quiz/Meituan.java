@@ -1,6 +1,8 @@
 package quiz;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @since 2021/8/22 9:48
@@ -8,8 +10,43 @@ import java.util.*;
 public class Meituan {
     private static final int MOD = 1000000007;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        Meituan meituan = new Meituan();
+        Thread a = new Thread(() -> {
+            try {
+                meituan.a();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        Thread b = new Thread(() -> {
+            try {
+                meituan.b();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ;
+        });
+        a.start();
+        b.start();
+        a.join();
+        b.join();
+    }
 
+    public static synchronized void a() throws InterruptedException {
+        for (int i = 0; i < 10; i++) {
+            Thread.sleep(100);
+            System.out.println("a" + i);
+        }
+    }
+
+    public void b() throws InterruptedException {
+        synchronized (this) {
+            for (int i = 0; i < 10; i++) {
+                Thread.sleep(100);
+                System.out.println("b" + i);
+            }
+        }
     }
 
     private static void q3() {
@@ -94,7 +131,7 @@ public class Meituan {
     private static void hepler(List<List<Integer>> res, int[] nums, int i) {
         if (i >= nums.length) {
             List<Integer> tmp = new ArrayList<>();
-            for(int num : nums) {
+            for (int num : nums) {
                 tmp.add(num);
             }
             res.add(tmp);

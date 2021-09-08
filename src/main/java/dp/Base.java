@@ -1,71 +1,396 @@
 package dp;
 
-import static utils.EasyUtil.*;
+import struct.TreeNode;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
+
+import static utils.EasyUtil.MOD;
 
 /**
  * 2020/6/27 动态规划
  */
 public class Base {
 
+    /*
+    线性动态规划
+    dp[n] := [0..n]上的问题
+    dp[n] = f(dp[n-1], ..., dp[0])
+    */
+
     /**
-     * LeetCode300 给定一个无序的整数数组，找到其中最长上升子序列的长度 不要求子序列连续
-     *
-     * @param nums 无序的整数数组
+     * LIS 最小上升子序列的长度
      */
     public int lengthOfLIS(int[] nums) {
-        final int n = nums.length;
-        if (n == 0) {
-            return 0;
-        }
-        // dp[i]代表前i个元素中的最长上升子序列
-        int[] dp = new int[n];
-        dp[0] = 1;
-        int res = 1;
-        for (int i = 1; i < n; i++) {
-            // 找到索引i对应的nums[i]大于nums[j]的值
-            int dpm = 0;
+        // f[i] 从0开始以i结尾的最小上升子序列的长度
+        // f[i] = max(f[j]) + 1, j<i and nums[i]>nums[j]
+
+        // 1.递归
+//        int n = nums.length;
+//        int[] cache = new int[n];
+//        return lengthOfLIS(nums, n - 1, cache);
+
+        // 2.迭代
+        int n = nums.length;
+        int[] f = new int[n];
+        Arrays.fill(f, 1);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) {
                 if (nums[i] > nums[j]) {
-                    dpm = Math.max(dpm, dp[j]);
+                    f[i] = Math.max(f[i], f[j] + 1);
                 }
             }
-            dp[i] = 1 + dpm;
-            res = Math.max(dp[i], res);
+            res = Math.max(res, f[i]);
+        }
+        return res;
+    }
+
+    private int lengthOfLIS(int[] nums, int i, int[] cache) {
+        if (cache[i] != 0) {
+            return cache[i];
+        }
+        int res = 1;
+        for (int j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                res = Math.max(res, lengthOfLIS(nums, j, cache) + 1);
+            }
         }
         return res;
     }
 
     /**
-     * LeetCode53 找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和
-     *
-     * @param nums 整数数组
+     * 最长递增子序列的个数
      */
-    public int maxSubArray(int[] nums) {
+    public int findNumberOfLIS(int[] nums) {
         final int n = nums.length;
-        if (n == 0) {
-            return 0;
+        // lengths 从0开始以i结尾的最长递增子序列长度
+        // counts 从0开始以i结尾长度为最长递增子序列长度的个数
+        int[] lengths = new int[n];
+        int[] counts = new int[n];
+        Arrays.fill(lengths, 1);
+        Arrays.fill(counts, 1);
+        int maxLength = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    if (lengths[j] + 1 > lengths[i]) {
+                        lengths[i] = lengths[j] + 1;
+                        counts[i] = counts[j];
+                    } else if (lengths[j] + 1 == lengths[i]) {
+                        counts[i] += counts[j];
+                    }
+                }
+            }
+            maxLength = Math.max(maxLength, lengths[i]);
         }
-        // dp[i]前i个元素中以第i个元素结尾的连续子数组的最大和
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (lengths[i] == maxLength) {
+                count += counts[i];
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 俄罗斯套娃信封问题
+     */
+    public int maxEnvelopes(int[][] envelopes) {
+        final int n = envelopes.length;
+        // [[5,4],[6,4],[6,7],[2,3]] --> [[2,3],[5,4],[6,7],[6,4]]
+        // --> 3, 4, 7, 4
+        Arrays.sort(envelopes, (o1, o2) -> {
+            if (o1[0] != o2[0]) {
+                return o1[0] - o2[0];
+            }
+            return o2[1] - o1[1];
+        });
+        // dp[i] 从0开始以i结束能够构成的最多信封数
         int[] dp = new int[n];
-        dp[0] = nums[0];
-        int res = dp[0];
-        for (int i = 1; i < n; i++) {
-            if (dp[i - 1] > 0) {
-                // 以i-1结尾的连续子数组和大于0则继续添加
-                dp[i] = dp[i - 1] + nums[i];
-            } else {
-                // 小于0则重新开始
-                dp[i] = nums[i];
+        Arrays.fill(dp, 1);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (envelopes[i][1] > envelopes[j][1]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
             }
             res = Math.max(res, dp[i]);
         }
         return res;
     }
 
-    /*--------------------------------------------------------------------*/
+    /**
+     * 最大子序和
+     */
+    public int maxSubArray(int[] nums) {
+        // f[i] 从0开始以i结尾的最大子序和
+        // f[i] = nums[i] + max(f[j], 0), j=i-1
+        final int n = nums.length;
+        int[] dp = new int[n];
+        int res = dp[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            dp[i] = nums[i] + Math.max(dp[i - 1], 0);
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 乘积最大子数组
+     */
+    public int maxProduct(int[] nums) {
+        // mm[i] 从0开始以i结尾的最大乘积
+        // nn[i]] 从0开始以i结尾的最小乘积
+        final int n = nums.length;
+        int[] mm = new int[n];
+        int[] nn = new int[n];
+        mm[0] = nn[0] = nums[0];
+        int res = mm[0];
+        for (int i = 1; i < n; i++) {
+            mm[i] = Math.max(nums[i], Math.max(mm[i - 1] * nums[i], nn[i - 1] * nums[i]));
+            nn[i] = Math.min(nums[i], Math.min(mm[i - 1] * nums[i], nn[i - 1] * nums[i]));
+            res = Math.max(res, mm[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 环形子数组的最大和
+     */
+    public int maxSubarraySumCircular(int[] nums) {
+        // 分2类 A=[0, 1, 2, 3, 4, 5, 6]
+        // 1类是没有跨越边界 [2,3,4] 直接使用最大子序和解决
+        // 2类是跨越了边界 [0,1] + [5,6]
+        int res = maxSubArray(nums);
+        // 后缀和数组
+        final int n = nums.length;
+        int[] rightsums = new int[n];
+        rightsums[n - 1] = nums[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            rightsums[i] = rightsums[i + 1] + nums[i];
+        }
+        // 右侧最大值数组
+        int[] maxright = new int[n];
+        maxright[n - 1] = rightsums[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            maxright[i] = Math.max(maxright[i + 1], rightsums[i]);
+        }
+        int leftsum = 0;
+        for (int i = 0; i < n - 2; i++) {
+            leftsum += nums[i];
+            res = Math.max(res, leftsum + maxright[i + 1]);
+        }
+        return res;
+    }
+
+    /**
+     * 最大子矩阵
+     */
+    public int[] getMaxMatrix(int[][] matrix) {
+        final int m = matrix.length, n = matrix[0].length;
+        int sx = 0, sy = 0;
+        int sum = Integer.MIN_VALUE;
+        int[] res = new int[4];
+        for (int i = 0; i < m; i++) {
+            // 矩阵从上往下扫描
+            // i区间上边界 j区间下边界 [i,j]
+            int[] sub = new int[n];
+            for (int j = i; j < m; j++) {
+                int dp = 0;
+                for (int k = 0; k < n; k++) {
+                    sub[k] += matrix[j][k];
+                    if (dp > 0) {
+                        dp += sub[k];
+                    } else {
+                        // 重新开始左边界
+                        dp = sub[k];
+                        sx = i;
+                        sy = k;
+                    }
+
+                    if (dp > sum) {
+                        sum = dp;
+                        res[0] = sx;
+                        res[1] = sy;
+                        res[2] = j;
+                        res[3] = k;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 矩形区域不超过 K 的最大数值和
+     */
+    public int maxSumSubmatrix(int[][] matrix, int k) {
+        final int m = matrix.length, n = matrix[0].length;
+        int res = Integer.MIN_VALUE;
+        // 行[i,j]区间
+        for (int i = 0; i < m; i++) {
+            int[] sub = new int[n];
+            for (int j = i; j < m; j++) {
+                for (int l = 0; l < n; l++) {
+                    sub[l] += matrix[j][l];
+                }
+                res = Math.max(res, maxSumSubArray(sub, k));
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 数组不超过 K 的最大数值和
+     */
+    private int maxSumSubArray(int[] nums, int k) {
+        // 1.暴力
+//        final int n = nums.length;
+//        int res = Integer.MIN_VALUE;
+//        for (int i = 0; i < n; i++) {
+//            int sum = 0;
+//            for (int j = i; j < n; j++) {
+//                sum += nums[j];
+//                if (sum > res && sum <= k) {
+//                    res = sum;
+//                }
+//                if (res == k) {
+//                    return res;
+//                }
+//            }
+//        }
+//        return res;
+        // 2.二分查找
+        // [l, r) nums[l] + nums[l+1] + ... + nums[r-1] <= k -->
+        // Sr - Sl <= k --> Sl >= Sr - k 找到最小的Sl使左边式子成立
+        int res = Integer.MIN_VALUE;
+        TreeSet<Integer> set = new TreeSet<>();
+        set.add(0);
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+            Integer sl = set.ceiling(sum - k);
+            if (sl != null) {
+                res = Math.max(res, sum - sl);
+            }
+            set.add(sum);
+        }
+        return res;
+    }
+
+    /**
+     * 打家劫舍
+     */
+    public int rob(int[] nums) {
+        final int n = nums.length;
+        if (n == 1) {
+            return nums[0];
+        }
+        // 从0开始到刚刚好偷第i家
+        // f[i] = max(f[i-1], f[i-2]+nums[i])
+        return robRange(nums, 0, n - 1);
+    }
+
+    /**
+     * [start, end]
+     */
+    private int robRange(int[] nums, int start, int end) {
+        int f0 = nums[start], f1 = Math.max(nums[start], nums[start + 1]);
+        for (int i = start + 2; i <= end; i++) {
+            int tmp = f1;
+            f1 = Math.max(f1, f0 + nums[i]);
+            f0 = tmp;
+        }
+        return f1;
+    }
+
+    /**
+     * 打家劫舍 II
+     */
+    public int robII(int[] nums) {
+        final int n = nums.length;
+        if (n == 1) {
+            return nums[0];
+        } else if (n == 2) {
+            return Math.max(nums[0], nums[1]);
+        }
+        return Math.max(robRange(nums, 0, n - 2), robRange(nums, 1, n - 1));
+    }
+
+    /**
+     * 打家劫舍 III
+     */
+    public int robIII(TreeNode root) {
+        int[] res = robIIIHelper(root);
+        return Math.max(res[0], res[1]);
+    }
+
+    private int[] robIIIHelper(TreeNode node) {
+        if (node == null) {
+            return new int[]{0, 0};
+        }
+        // 后序遍历 递归写法
+        int[] left = robIIIHelper(node.left);
+        int[] right = robIIIHelper(node.right);
+
+        // 状态转移
+        int[] res = new int[2];
+        // 该节点不偷
+        res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        // 该节点偷
+        res[1] = node.val + left[0] + right[0];
+        return res;
+    }
+
+    /**
+     * 删除与获得点数
+     * 转化为rob问题 获得了nums[x]就不能获得nums[x]-1与nums[x]+1
+     */
+    public int deleteAndEarn(int[] nums) {
+        final int n = nums.length;
+        assert n > 0;
+        int max = Arrays.stream(nums).max().getAsInt();
+        int[] sums = new int[max + 1];
+        for (int num : nums) {
+            sums[num] += num;
+        }
+        return robRange(sums, 0, max);
+    }
+
+    /**
+     * 3n 块披萨
+     * 转化为3n块里取n个互不相邻的数和的最大值
+     */
+    public int maxSizeSlices(int[] slices) {
+        final int n = slices.length;
+        return Math.max(maxSizeSlicesHelper(Arrays.copyOfRange(slices, 0, n - 1)),
+                maxSizeSlicesHelper(Arrays.copyOfRange(slices, 1, n)));
+    }
+
+    /**
+     * [start, end]
+     */
+    private int maxSizeSlicesHelper(int[] slices) {
+        // f[i][j] 从0开始以i结尾的元素中一共选择了j个情况下的和的最大值
+        // f[i][j] = max(f[i-1][j], f[i-2][j-1]+slice[i-1])
+        final int n = slices.length;
+        final int m = (n + 1) / 3;
+        int[][] f = new int[n + 1][m + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (i == 1) {
+                    f[i][j] = slices[i - 1];
+                } else {
+                    f[i][j] = Math.max(f[i - 1][j], f[i - 2][j - 1] + slices[i - 1]);
+                }
+            }
+        }
+        return f[n][m];
+    }
 
     /**
      * LeetCode72 编辑距离 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 插入一个字符 删除一个字符 替换一个字符

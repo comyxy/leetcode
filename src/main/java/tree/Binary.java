@@ -641,12 +641,12 @@ public class Binary {
         Deque<TreeNode> stack = new LinkedList<>();
         while (node != null || !stack.isEmpty()) {
             while (node != null) {
-                stack.addLast(node);
+                stack.push(node);
                 node = node.left;
             }
-            node = stack.peekLast();
+            node = stack.peek();
             if (node.right == null || node.right == pre) {
-                stack.removeLast();
+                stack.pop();
                 res.add(node.val);
                 pre = node;
                 node = null;
@@ -714,7 +714,7 @@ public class Binary {
             int len = queue.size();
             for (int j = 0; j < len; j++) {
                 TreeNode p = queue.poll();
-                if(!adjs.containsKey(p)) {
+                if (!adjs.containsKey(p)) {
                     continue;
                 }
                 for (TreeNode next : adjs.get(p)) {
