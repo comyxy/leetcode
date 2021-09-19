@@ -104,43 +104,6 @@ public class Slice {
 
 
     /**
-     * 368. 最大整除子集
-     */
-    public List<Integer> largestDivisibleSubset(int[] nums) {
-        Arrays.sort(nums);
-        int n = nums.length;
-        int[] size = new int[n];
-        int[] trace = new int[n];
-        for (int r = 0; r < n; r++) {
-            int s = 1, p = r;
-            for (int l = 0; l < r; l++) {
-                if (nums[r] % nums[l] == 0) {
-                    if (size[l] + 1 > s) {
-                        s = size[l] + 1;
-                        p = l;
-                    }
-                }
-            }
-            size[r] = s;
-            trace[r] = p;
-        }
-
-        int idx = 0, val = size[0];
-        for (int i = 1; i < n; i++) {
-            if (size[i] > val) {
-                idx = i;
-                val = size[i];
-            }
-        }
-        List<Integer> res = new ArrayList<>();
-        for (int i = 0; i < val; i++) {
-            res.add(nums[idx]);
-            idx = trace[idx];
-        }
-        return res;
-    }
-
-    /**
      * 377. 组合总和 Ⅳ
      */
     public int combinationSum4(int[] nums, int target) {

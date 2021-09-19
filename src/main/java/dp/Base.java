@@ -2,9 +2,7 @@ package dp;
 
 import struct.TreeNode;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 import static utils.EasyUtil.MOD;
 
@@ -390,6 +388,127 @@ public class Base {
             }
         }
         return f[n][m];
+    }
+
+    /**
+     * 最长的斐波那契子序列的长度
+     */
+    public int lenLongestFibSubseq(int[] arr) {
+        final int n = arr.length;
+        Map<Integer, Integer> v2i = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            v2i.put(arr[i], i);
+        }
+        int res = 0;
+        int[][] f = new int[n][n];
+        // f[i][j] = f[j][k] + 1
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                int tmp = arr[i] - arr[j];
+                if (v2i.containsKey(tmp) && v2i.get(tmp) < j) {
+                    f[i][j] = f[j][v2i.get(tmp)] + 1;
+                } else {
+                    f[i][j] = 2;
+                }
+                res = Math.max(res, f[i][j]);
+            }
+        }
+        return res == 2 ? 0 : res;
+    }
+
+    /**
+     * 最长等差数列
+     */
+    public int longestArithSeqLength(int[] nums) {
+        final int n = nums.length;
+        int[][] f = new int[n][n];
+        Map<Integer, Integer> v2i = new HashMap<>();
+        int res = 0;
+        // 迭代顺序
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int tmp = 2 * nums[i] - nums[j];
+                if (v2i.containsKey(tmp) && v2i.get(tmp) < i) {
+                    f[i][j] = f[v2i.get(tmp)][i] + 1;
+                } else {
+                    f[i][j] = 2;
+                }
+                res = Math.max(res, f[i][j]);
+            }
+            // 存在重复元素 只能在迭代时添加
+            // 选择的是离j最近的
+            v2i.put(nums[i], i);
+        }
+        return res;
+    }
+
+    /**
+     * 形成字符串的最短路径
+     */
+    public int shortestWay(String source, String target) {
+        final int m = source.length(), n = target.length();
+        Set<Character> set = new HashSet<>();
+        for (int i = 0; i < m; i++) {
+            set.add(source.charAt(i));
+        }
+        for (int i = 0; i < n; i++) {
+            if (!set.contains(target.charAt(i))) {
+                return -1;
+            }
+        }
+        int[] f = new int[n];
+        StringBuilder sb = new StringBuilder();
+        // f[i] = f[i-1] if source contains tmp
+        // f[i] = f[i-1] + 1 if source not contains tmp
+        for (int i = 0; i < n; i++) {
+            char c = target.charAt(i);
+            sb.append(c);
+            if (i == 0) {
+                f[i] = 1;
+            } else {
+                if (isSubsequence(sb.toString(), source)) {
+                    f[i] = f[i - 1];
+                } else {
+                    f[i] = f[i - 1] + 1;
+                    sb.delete(0, sb.length() - 1);
+                }
+            }
+        }
+        return f[n - 1];
+    }
+
+    /**
+     * 最大整除子集
+     */
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        final int n = nums.length;
+        Arrays.sort(nums);
+        // dp得到最大子集长度与子集中的最大数
+        int[] f = new int[n];
+        int maxV = 0, maxS = 0;
+        Arrays.fill(f, 1);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] % nums [j] == 0) {
+                    f[i] = Math.max(f[i], f[j] + 1);
+                }
+            }
+            if (f[i] > maxS) {
+                maxS = f[i];
+                maxV = nums[i];
+            }
+        }
+
+        // 得到最大整除子集
+        List<Integer> res = new ArrayList<>();
+        for (int i = n - 1; i >= 0 && maxV > 0; i--) {
+            if (f[i] == maxS && maxV % nums[i] == 0) {
+                res.add(nums[i]);
+                maxS--;
+                maxV = nums[i];
+            }
+        }
+        return res;
     }
 
     /**

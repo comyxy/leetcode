@@ -1,7 +1,6 @@
 package quiz;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * @since 2021/8/27 11:27
@@ -13,12 +12,142 @@ public class MeituanTest {
 //        q2();
 //        q3();
 //        q4();
-        q5();
+//        q5();
 //        q6();
+//        q7();
+        q8();
+    }
+
+    private static void q8() {
+        Scanner in = new Scanner(System.in);
+        String[] cs = in.nextLine().split(" ");
+        int n = Integer.parseInt(cs[0]);
+        int h = Integer.parseInt(cs[1]), w = Integer.parseInt(cs[2]);
+        int[][] blackholes = new int[n][2];
+        cs = in.nextLine().split(" ");
+        for (int i = 0; i < n; i++) {
+            blackholes[i][0] = Integer.parseInt(cs[i]);
+        }
+        cs = in.nextLine().split(" ");
+        for (int i = 0; i < n; i++) {
+            blackholes[i][1] = Integer.parseInt(cs[i]);
+        }
+        int res = q8(h, w, blackholes);
+        System.out.println(res);
+    }
+
+    private static int q8(int h, int w, int[][] blackholes) {
+        int lo = 0, hi = Math.min(h, w);
+        // [lo, hi]
+        while (lo <= hi) {
+            int mid = (lo + hi) >> 1;
+            if (!cango(h, w, blackholes, mid)) {
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        return hi;
+    }
+
+    private static boolean cango(int h, int w, int[][] blackholes, int r) {
+        Queue<int[]> queue = new LinkedList<>();
+        int[][] dirs = {{-1,0}, {1,0}, {0,1}, {0,-1}};
+        boolean[][] visited = new boolean[h + 1][w + 1];
+        visited[0][0] = true;
+        queue.offer(new int[]{0, 0});
+        while (!queue.isEmpty()) {
+            int[] p = queue.poll();
+            int x = p[0], y = p[1];
+            if (x == h && y == w) {
+                return true;
+            }
+            for (int k = 0; k < 4; k++) {
+                int nx = x + dirs[k][0], ny = y + dirs[k][1];
+                if (nx >= 0 && nx <= h && ny >= 0 && ny <= w && !visited[nx][ny]) {
+                    boolean can = true;
+                    for (int[] b : blackholes) {
+                        if ((b[0] - nx) * (b[0] - nx) + (b[1] - ny) * (b[1] - ny) < r * r) {
+                            can = false;
+                            break;
+                        }
+                    }
+                    if (can) {
+                        queue.offer(new int[]{nx, ny});
+                        visited[nx][ny] = true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void q7() {
+        Scanner in = new Scanner(System.in);
+        String[] cs = in.nextLine().split(" ");
+        int n = Integer.parseInt(cs[0]);
+        int m = Integer.parseInt(cs[1]);
+        boolean[][] matrix = new boolean[n][n];
+        for (int i = 0; i < m; i++) {
+            cs = in.nextLine().split(" ");
+            int u = Integer.parseInt(cs[0]);
+            int v = Integer.parseInt(cs[1]);
+            matrix[u - 1][v - 1] = true;
+            matrix[v - 1][u - 1] = true;
+        }
+        Set<Set<Integer>> res = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            boolean[] visited = new boolean[n];
+            Set<Integer> set = new HashSet<>();
+            set.add(i);
+            visited[i] = true;
+            q7Helper(i, 1, visited, matrix, set, res);
+        }
+        System.out.println(res.size());
+    }
+
+    private static void q7Helper(int u, int depth, boolean[] visited, boolean[][] matrix,
+                                 Set<Integer> set, Set<Set<Integer>> res) {
+        if (depth == 5) {
+            res.add(new HashSet<>(set));
+            return;
+        }
+        int n = matrix.length;
+        for (int v = 0; v < n; v++) {
+            if (matrix[u][v] && !visited[v]) {
+                visited[v] = true;
+                set.add(v);
+                q7Helper(v, depth + 1, visited, matrix, set, res);
+                visited[v] = false;
+                set.remove(v);
+            }
+        }
+
     }
 
     private static void q5() {
+        Scanner in = new Scanner(System.in);
+        int n = Integer.parseInt(in.nextLine());
+        for (int i = 0; i < n; i++) {
+            String s = in.nextLine();
+            boolean res = q5(s);
+            if (res) {
+                System.out.println("YES");
+            } else {
+                System.out.println("NO");
+            }
+        }
+    }
 
+    private static boolean q5(String s) {
+        final int n = s.length();
+        char pre = s.charAt(0);
+        for (int i = 1; i < n; i++) {
+            if (s.charAt(i) != pre) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void q6() {

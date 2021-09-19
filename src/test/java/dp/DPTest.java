@@ -44,9 +44,21 @@ class DPTest {
 
     @Test
     void maxSumSubmatrix() {
-        int[][] matrix = {{2,2,-1}};
+        int[][] matrix = {{2, 2, -1}};
         int k = 3;
         assertEquals(3, base.maxSumSubmatrix(matrix, k));
+    }
+
+    @Test
+    void longestArithSeqLength() {
+        int[] nums = {3, 6, 9, 12};
+        assertEquals(4, base.longestArithSeqLength(nums));
+    }
+
+    @Test
+    void largestDivisibleSubset() {
+        int[] nums = {1, 2, 3};
+        assertEquals(2, base.largestDivisibleSubset(nums).size());
     }
 
 
