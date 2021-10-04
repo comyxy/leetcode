@@ -10,6 +10,58 @@ import static utils.EasyUtil.MOD;
 public class Base {
 
     /**
+     * 含特定字母的最小子序列
+     */
+    public String smallestSubsequence(String s, int k, char letter, int repetition) {
+        Deque<Character> deque = new LinkedList<>();
+        int unread = 0, readed = 0;
+        final int n = s.length();
+        for (int i = 0; i < n; i++) {
+            if (letter == s.charAt(i)) {
+                unread++;
+            }
+        }
+        int deleted = n - k;
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            while (!deque.isEmpty() && deleted > 0 && c < deque.peekLast()) {
+                if (deque.peekLast() == letter) {
+                    if (unread + (readed - 1) < repetition) {
+                        break;
+                    }
+                    readed--;
+                }
+                deque.pollLast();
+                deleted--;
+            }
+            if (c == letter) {
+                unread--;
+                readed++;
+            }
+            deque.addLast(c);
+        }
+
+        // deque现在满足repetition个letter 但是不满足k个元素
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; !deque.isEmpty(); i++) {
+            Character c = deque.pollFirst();
+            if (i < k) {
+                sb.append(c);
+            } else if (c == letter) {
+                readed--;
+            }
+        }
+        for (int i = sb.length() - 1; i >= 0; i--) {
+            if (readed < repetition && sb.charAt(i) != letter) {
+                // replace
+                sb.setCharAt(i, letter);
+                readed++;
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
      * 不同的子序列
      * 给定一个字符串S 计算S的不同非空子序列的个数
      */

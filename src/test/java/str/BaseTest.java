@@ -30,4 +30,14 @@ class BaseTest {
         int result = str.distinctSubseqII(s);
         assertEquals(97915677, result);
     }
+
+    @Test
+    void smallestSubsequence() {
+        String s = "mmmxmxymmm";
+        int k = 8;
+        char letter = 'm';
+        int repetition = 4;
+        String result = str.smallestSubsequence(s, k, letter, repetition);
+        assertEquals("mmmmxmmm", result);
+    }
 }
